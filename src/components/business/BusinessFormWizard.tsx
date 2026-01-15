@@ -1,0 +1,399 @@
+'use client'
+
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { createBusinessSchema, CreateBusinessInput } from '@/lib/business-schema'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import { Check, ChevronRight, ChevronLeft, Building2, Utensils, Stethoscope, Store, Loader2, Upload } from 'lucide-react'
+import { createBusiness } from '@/app/actions/business'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+
+type Category = {
+    id: string;
+    name: string;
+    slug: string;
+    icon?: string;
+}
+
+export function BusinessFormWizard({ categories }: { categories: Category[] }) {
+    const [step, setStep] = useState(1)
+    const [isLoading, setIsLoading] = useState(false)
+    const router = useRouter()
+
+    const form = useForm<CreateBusinessInput>({
+        resolver: zodResolver(createBusinessSchema),
+        mode: 'onChange',
+        defaultValues: {
+            business_name: '',
+            description: '',
+            city: 'Mumbai',
+            details: {},
+            images: [],
+        }
+    })
+
+    const { register, control, watch, setValue, formState: { errors, isValid } } = form
+    const selectedCategoryId = watch('category_id')
+    const selectedCategory = categories.find(c => c.id === selectedCategoryId)
+
+    const validateStep = async () => {
+        let fieldsToValidate: any[] = []
+        if (step === 1) fieldsToValidate = ['business_name', 'description', 'city', 'area', 'address', 'phone']
+        if (step === 2) fieldsToValidate = ['category_id']
+
+        const result = await form.trigger(fieldsToValidate)
+        if (result) setStep(s => s + 1)
+    }
+
+    const onSubmit = async (data: CreateBusinessInput) => {
+        setIsLoading(true)
+        data.category_slug = selectedCategory?.slug || ''
+
+        try {
+            const res = await createBusiness(null, data)
+            if (res.error) {
+                toast.error(res.error)
+            } else {
+                toast.success("Business listed successfully!")
+                router.push(`/business/${res.slug}`)
+            }
+        } catch (e) {
+            toast.error("Something went wrong.")
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const steps = [
+        { id: 1, title: 'Basic Info' },
+        { id: 2, title: 'Category' },
+        { id: 3, title: 'Details' },
+        { id: 4, title: 'Review' }
+    ]
+
+    return (
+        <div className="flex flex-col h-full min-h-[600px] shadow-2xl rounded-3xl overflow-hidden border border-gray-100">
+            {/* Progress Bar - Solid White */}
+            <div className="bg-white border-b border-gray-100 p-6 md:p-8">
+                <div className="flex justify-between items-center max-w-xl mx-auto relative">
+                    {/* Background Line */}
+                    <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 -translate-y-1/2 rounded-full -z-10" />
+
+                    {/* Active Line (Solid Brand Color) */}
+                    <div
+                        className="absolute top-1/2 left-0 h-1 bg-[#FF5200] -translate-y-1/2 rounded-full -z-10 transition-all duration-500 ease-in-out"
+                        style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
+                    />
+
+                    {steps.map((s) => {
+                        const isActive = step >= s.id;
+                        const isCompleted = step > s.id;
+
+                        return (
+                            <div key={s.id} className="flex flex-col items-center relative group">
+                                <div
+                                    className={`
+                                        w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 border-2
+                                        ${isActive
+                                            ? 'bg-[#FF5200] border-[#FF5200] text-white shadow-lg shadow-orange-500/20 scale-110'
+                                            : 'bg-white border-gray-200 text-gray-400'
+                                        }
+                                    `}
+                                >
+                                    {isCompleted ? <Check className="w-4 h-4" strokeWidth={3} /> : s.id}
+                                </div>
+                                <span className={`
+                                    absolute -bottom-6 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition-colors duration-300
+                                    ${isActive ? 'text-[#FF5200]' : 'text-gray-400'}
+                                `}>
+                                    {s.title}
+                                </span>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+
+            {/* Form Content - Solid White Card Main */}
+            <div className="flex-1 p-6 md:p-8 relative z-20 bg-white">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-xl mx-auto space-y-6">
+                    <AnimatePresence mode="wait">
+
+                        {/* STEP 1: BASIC INFO */}
+                        {step === 1 && (
+                            <motion.div
+                                key="step1"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="space-y-6"
+                            >
+                                <div className="space-y-5">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <div className="space-y-2">
+                                            <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Business Name</Label>
+                                            <Input {...register('business_name')} placeholder="e.g. Sharma Sweets" className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm" />
+                                            {errors.business_name && <p className="text-red-500 text-xs font-semibold mt-1">{errors.business_name.message}</p>}
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Phone Number</Label>
+                                            <Input {...register('phone')} placeholder="+91 9876543210" className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm" />
+                                            {errors.phone && <p className="text-red-500 text-xs font-semibold mt-1">{errors.phone.message}</p>}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Description</Label>
+                                        <Textarea {...register('description')} placeholder="Tell us about your business..." className="min-h-[100px] rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm resize-none" />
+                                        {errors.description && <p className="text-red-500 text-xs font-semibold mt-1">{errors.description.message}</p>}
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <div className="space-y-2">
+                                            <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">City</Label>
+                                            <Select onValueChange={(val) => setValue('city', val)} defaultValue={watch('city')}>
+                                                <SelectTrigger className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm"><SelectValue placeholder="Select City" /></SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Mumbai">Mumbai</SelectItem>
+                                                    <SelectItem value="Delhi">Delhi</SelectItem>
+                                                    <SelectItem value="Bangalore">Bangalore</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Area / Locality</Label>
+                                            <Input {...register('area')} placeholder="e.g. Bandra West" className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm" />
+                                            {errors.area && <p className="text-red-500 text-xs font-semibold mt-1">{errors.area.message}</p>}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Full Address</Label>
+                                        <Input {...register('address')} placeholder="Shop No, Building, Street..." className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm" />
+                                        {errors.address && <p className="text-red-500 text-xs font-semibold mt-1">{errors.address.message}</p>}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {/* STEP 2: CATEGORY Selection */}
+                        {step === 2 && (
+                            <motion.div
+                                key="step2"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="space-y-6"
+                            >
+                                <div className="text-center space-y-2">
+                                    <h3 className="text-2xl font-bold text-gray-800">Choose Category</h3>
+                                    <p className="text-gray-500 text-sm">Select the most relevant category for your business.</p>
+                                </div>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                    {categories.map((cat) => (
+                                        <div
+                                            key={cat.id}
+                                            onClick={() => setValue('category_id', cat.id)}
+                                            className={`cursor-pointer border rounded-xl p-4 flex flex-col items-center justify-center gap-3 transition-all duration-200 
+                                                ${selectedCategoryId === cat.id
+                                                    ? 'border-orange-500 bg-orange-50 shadow-md ring-1 ring-orange-500'
+                                                    : 'border-gray-200 bg-white hover:border-orange-300 hover:shadow-sm'
+                                                }`}
+                                        >
+                                            <div className={`p-2.5 rounded-lg transition-colors duration-200 ${selectedCategoryId === cat.id ? 'bg-orange-500 text-white shadow-sm' : 'bg-gray-100 text-gray-500 group-hover:bg-orange-100'}`}>
+                                                <Building2 className="w-5 h-5" />
+                                            </div>
+                                            <span className={`font-semibold text-sm text-center ${selectedCategoryId === cat.id ? 'text-orange-700' : 'text-gray-700'}`}>{cat.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                {errors.category_id && <p className="text-red-500 text-center text-sm font-medium">{errors.category_id.message}</p>}
+                            </motion.div>
+                        )}
+
+                        {/* STEP 3: DYNAMIC DETAILS */}
+                        {step === 3 && (
+                            <motion.div
+                                key="step3"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="space-y-6"
+                            >
+                                <div className="text-center">
+                                    <h3 className="text-2xl font-bold text-gray-800">
+                                        {selectedCategory ? `${selectedCategory.name} Details` : 'Additional Details'}
+                                    </h3>
+                                    <p className="text-gray-500 text-sm mt-1">A few more specific details.</p>
+                                </div>
+
+                                {/* DYNAMIC FORM LOGIC (Re-styled inputs) */}
+                                {selectedCategory?.slug === 'restaurants' && (
+                                    <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4">
+                                        <div className="space-y-2">
+                                            <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Cuisines (Comma separated)</Label>
+                                            <Input
+                                                placeholder="e.g. North Indian, Chinese, Italian"
+                                                onChange={(e) => {
+                                                    const val = e.target.value.split(',').map(s => s.trim())
+                                                    setValue('details.cuisines', val)
+                                                }}
+                                                className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Average Cost (for two)</Label>
+                                            <Input
+                                                placeholder="e.g. ₹800"
+                                                {...register('details.avg_cost')}
+                                                className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Type</Label>
+                                            <Select onValueChange={(val) => setValue('details.veg_non_veg', val)}>
+                                                <SelectTrigger className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm"><SelectValue placeholder="Select Type" /></SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Veg">Pure Veg</SelectItem>
+                                                    <SelectItem value="Non-Veg">Non-Veg</SelectItem>
+                                                    <SelectItem value="Both">Both</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {selectedCategory?.slug === 'doctors' && (
+                                    <div className="space-y-5">
+                                        <div className="space-y-2">
+                                            <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Specialization</Label>
+                                            <Input {...register('details.specialization')} placeholder="e.g. Cardiologist" className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Experience (Years)</Label>
+                                            <Input type="number" {...register('details.experience_years')} placeholder="e.g. 10" className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Consultation Fee</Label>
+                                            <Input type="number" {...register('details.consultation_fee')} placeholder="e.g. 500" className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm" />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {selectedCategory?.slug === 'hotels' && (
+                                    <div className="space-y-5">
+                                        <div className="space-y-2">
+                                            <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Star Rating</Label>
+                                            <Select onValueChange={(val) => setValue('details.star_rating', parseInt(val))}>
+                                                <SelectTrigger className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm"><SelectValue placeholder="Select Star Rating" /></SelectTrigger>
+                                                <SelectContent>
+                                                    {[1, 2, 3, 4, 5].map(n => <SelectItem key={n} value={n.toString()}>{n} Star</SelectItem>)}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="font-bold text-gray-700 text-xs uppercase tracking-wide">Amenities (Comma separated)</Label>
+                                            <Input
+                                                placeholder="e.g. WiFi, Pool, Gym"
+                                                onChange={(e) => {
+                                                    const val = e.target.value.split(',').map(s => s.trim())
+                                                    setValue('details.amenities', val)
+                                                }}
+                                                className="h-12 rounded-xl bg-gray-50 border-gray-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all shadow-sm"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {['restaurants', 'doctors', 'hotels'].indexOf(selectedCategory?.slug || '') === -1 && (
+                                    <div className="p-6 bg-orange-50 rounded-xl border border-orange-100 text-orange-900 shadow-sm">
+                                        <p className="font-semibold text-sm">General details for {selectedCategory?.name}</p>
+                                        <div className="mt-4 space-y-2">
+                                            <Label className="font-bold text-gray-800 text-xs uppercase tracking-wide">Services Offered (Comma separated)</Label>
+                                            <Input
+                                                placeholder="List your services..."
+                                                onChange={(e) => {
+                                                    const val = e.target.value.split(',').map(s => s.trim())
+                                                    setValue('details.services_offered', val)
+                                                }}
+                                                className="h-12 rounded-xl bg-white border-orange-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                            </motion.div>
+                        )}
+
+                        {/* STEP 4: REVIEW */}
+                        {step === 4 && (
+                            <motion.div
+                                key="step4"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="space-y-6"
+                            >
+                                <div className="text-center">
+                                    <h3 className="text-2xl font-bold text-gray-800">Review & Submit</h3>
+                                    <p className="text-gray-500 text-sm mt-1">Double check your information.</p>
+                                </div>
+                                <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm space-y-4">
+                                    <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+                                        <span className="text-gray-500 font-bold text-xs uppercase tracking-wide">Business Name</span>
+                                        <span className="text-lg font-bold text-gray-800">{watch('business_name')}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+                                        <span className="text-gray-500 font-bold text-xs uppercase tracking-wide">Category</span>
+                                        <span className="bg-orange-100 text-orange-700 border border-orange-200 px-3 py-1 rounded-full text-sm font-bold shadow-sm">{selectedCategory?.name}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+                                        <span className="text-gray-500 font-bold text-xs uppercase tracking-wide">City</span>
+                                        <span className="text-gray-800 font-medium">{watch('city')}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-500 font-bold text-xs uppercase tracking-wide">Contact</span>
+                                        <span className="text-gray-800 font-medium">{watch('phone')}</span>
+                                    </div>
+                                </div>
+                                <div className="bg-blue-50 p-5 rounded-xl border border-blue-100 text-sm text-blue-900 flex gap-4 items-center shadow-sm">
+                                    <div className="bg-blue-200 p-2 rounded-full">
+                                        <Upload className="w-5 h-5 text-blue-700" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-base mb-0.5">Image Upload</p>
+                                        <p className="text-blue-700/80 text-xs">You can upload images after listing creation.</p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Navigation Buttons */}
+                    <div className="flex justify-between pt-8 border-t border-gray-100">
+                        {step > 1 ? (
+                            <Button type="button" variant="outline" onClick={() => setStep(s => s - 1)} className="rounded-xl h-12 px-6 border-2 hover:bg-gray-50 hover:border-gray-300 transition-all">
+                                <ChevronLeft className="w-4 h-4 mr-2" /> Back
+                            </Button>
+                        ) : <div></div>}
+
+                        {step < 4 ? (
+                            <Button type="button" onClick={validateStep} className="bg-[#FF5200] hover:bg-orange-700 text-white rounded-xl h-12 px-8 shadow-lg shadow-orange-200 hover:shadow-orange-300 transition-all active:scale-[0.98]">
+                                Next <ChevronRight className="w-4 h-4 ml-2" />
+                            </Button>
+                        ) : (
+                            <Button type="submit" disabled={isLoading} className="bg-gray-900 hover:bg-black text-white rounded-xl h-12 px-10 w-full md:w-auto shadow-lg hover:shadow-xl transition-all active:scale-[0.98] text-lg font-semibold">
+                                {isLoading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Check className="w-5 h-5 mr-2" />}
+                                Launch Business
+                            </Button>
+                        )}
+                    </div>
+                </form>
+            </div>
+        </div>
+    )
+}
