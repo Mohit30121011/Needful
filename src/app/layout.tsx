@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: 'NeedFul - Hyperlocal Super App',
   description: 'Find local services, restaurants, and more.',
   icons: {
-    icon: '/favicon.png', // Uses the user-uploaded branding
+    icon: '/favicon.ico',
   }
 }
 
