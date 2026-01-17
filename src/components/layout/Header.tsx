@@ -145,7 +145,7 @@ export function Header({ user }: HeaderProps) {
                         <img
                             src="/brand-logo.png"
                             alt="NeedFul"
-                            className={`transition-all duration-300 object-contain relative z-10 ${scrolled ? 'h-20 w-auto' : 'h-24 w-auto'
+                            className={`transition-all duration-300 object-contain relative z-10 ${scrolled ? 'h-16 w-auto' : 'h-18 w-auto'
                                 }`}
                         />
                     </Link>

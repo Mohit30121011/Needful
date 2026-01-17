@@ -30,6 +30,37 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
     const [favorites, setFavorites] = useState<ProviderWithDetails[]>(initialFavorites)
     const [isLoading, setIsLoading] = useState(false)
 
+    // Profile form state
+    const [fullName, setFullName] = useState(user?.user_metadata?.full_name || '')
+    const [phone, setPhone] = useState(user?.user_metadata?.phone || '')
+    const [city, setCity] = useState(user?.user_metadata?.city || 'Mumbai')
+    const [isSaving, setIsSaving] = useState(false)
+
+    // Handle profile save
+    const handleSaveProfile = async () => {
+        setIsSaving(true)
+        try {
+            const supabase = createClient()
+            const { error } = await supabase.auth.updateUser({
+                data: {
+                    full_name: fullName,
+                    phone: phone,
+                    city: city
+                }
+            })
+
+            if (error) throw error
+
+            toast.success('Profile updated successfully!')
+            router.refresh()
+        } catch (error: any) {
+            console.error('Error updating profile:', error)
+            toast.error(error.message || 'Failed to update profile')
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
     // Handle logout
     const handleLogout = async () => {
         const supabase = createClient()
@@ -39,11 +70,7 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
         toast.success('Logged out successfully')
     }
 
-    // Pass this to ServiceCard to remove item from list immediately if unfavorited?
-    // Or just let ServiceCard handle it and we refresh? 
-    // ServiceCard handles the toggle. But on this page, if we unfavorite, we might want it to disappear from the list.
-    // However, ServiceCard optimistic update sets isFavorited=false. 
-    // If we want it to vanish, we need a callback.
+    // Handle unfavorite
     const handleUnfavorite = (providerId: string) => {
         // Optimistically remove from list
         setFavorites(prev => prev.filter(p => p.id !== providerId))
@@ -102,13 +129,19 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
                                     </div>
                                     My Favorites
                                 </button>
-                                <button className="w-full text-left px-5 py-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent">
+                                <button
+                                    onClick={() => toast.info('Account Settings coming soon!')}
+                                    className="w-full text-left px-5 py-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent"
+                                >
                                     <div className="p-2 rounded-lg bg-gray-100">
                                         <Settings className="h-4 w-4 text-gray-500" />
                                     </div>
                                     Account Settings
                                 </button>
-                                <button className="w-full text-left px-5 py-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent">
+                                <button
+                                    onClick={() => toast.info('Privacy & Security settings coming soon!')}
+                                    className="w-full text-left px-5 py-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent"
+                                >
                                     <div className="p-2 rounded-lg bg-gray-100">
                                         <Shield className="h-4 w-4 text-gray-500" />
                                     </div>
@@ -141,7 +174,12 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
                                                 <Label htmlFor="name" className="text-sm font-semibold text-gray-700">Full Name</Label>
-                                                <Input id="name" defaultValue={user?.user_metadata?.full_name || ''} placeholder="John Doe" />
+                                                <Input
+                                                    id="name"
+                                                    value={fullName}
+                                                    onChange={(e) => setFullName(e.target.value)}
+                                                    placeholder="John Doe"
+                                                />
                                             </div>
                                             <div className="space-y-2">
                                                 <Label htmlFor="email" className="text-sm font-semibold text-gray-700">Email Address</Label>
@@ -149,15 +187,30 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
                                             </div>
                                             <div className="space-y-2">
                                                 <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">Phone Number</Label>
-                                                <Input id="phone" placeholder="+91 98765 43210" />
+                                                <Input
+                                                    id="phone"
+                                                    value={phone}
+                                                    onChange={(e) => setPhone(e.target.value)}
+                                                    placeholder="+91 98765 43210"
+                                                />
                                             </div>
                                             <div className="space-y-2">
                                                 <Label htmlFor="city" className="text-sm font-semibold text-gray-700">City</Label>
-                                                <Input id="city" defaultValue="Mumbai" />
+                                                <Input
+                                                    id="city"
+                                                    value={city}
+                                                    onChange={(e) => setCity(e.target.value)}
+                                                />
                                             </div>
                                         </div>
                                         <div className="pt-4 flex justify-end border-t border-gray-100">
-                                            <Button className="bg-[#FF5200] hover:bg-[#E04800] text-white px-8 h-11 font-semibold shadow-lg shadow-orange-500/20">Save Changes</Button>
+                                            <Button
+                                                onClick={handleSaveProfile}
+                                                disabled={isSaving}
+                                                className="bg-[#FF5200] hover:bg-[#E04800] text-white px-8 h-11 font-semibold shadow-lg shadow-orange-500/20 disabled:opacity-50"
+                                            >
+                                                {isSaving ? 'Saving...' : 'Save Changes'}
+                                            </Button>
                                         </div>
                                     </CardContent>
                                 </Card>
