@@ -31,9 +31,18 @@ export async function updateSession(request: NextRequest) {
     // supabase.auth.getUser(). A simple mistake could make it very hard to debug
     // issues with users being randomly logged out.
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    // Bypass for local UI preview if keys are placeholders or connection fails
+    let user = null
+    try {
+        if (process.env.NEXT_PUBLIC_SUPABASE_URL &&
+            !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('your_supabase_project_url') &&
+            !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder-project')) {
+            const { data } = await supabase.auth.getUser()
+            user = data.user
+        }
+    } catch (error) {
+        console.warn('Supabase auth failed (local preview mode):', error)
+    }
 
     // Protected routes
     const protectedRoutes = ['/dashboard', '/favorites']

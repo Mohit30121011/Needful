@@ -335,7 +335,7 @@ function SearchPageContent() {
         <div className="min-h-screen flex flex-col bg-background">
             <Header />
 
-            <main className="flex-1">
+            <main className="flex-1 pt-28">
                 <div className="bg-card">
                     <div className="container mx-auto px-4 md:px-6 py-3">
                         <div className="flex items-center text-sm text-muted-foreground">

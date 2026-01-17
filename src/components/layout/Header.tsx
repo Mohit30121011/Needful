@@ -81,9 +81,8 @@ export function Header({ user }: HeaderProps) {
 
     useEffect(() => {
         const handleScroll = () => {
-            // Trigger header search appearance after hero search is mostly out of view
-            // Hero section is ~85vh, so 400px is a safely scrolled distance
-            setScrolled(window.scrollY > 400)
+            // Trigger header search appearance after scrolling pasthero top
+            setScrolled(window.scrollY > 80)
         }
         window.addEventListener('scroll', handleScroll)
 
@@ -123,8 +122,8 @@ export function Header({ user }: HeaderProps) {
     return (
         <header
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-                ? 'bg-white/80 backdrop-blur-xl border-b border-orange-100/50 shadow-sm shadow-orange-500/5'
-                : 'bg-gradient-to-b from-white/90 to-white/60 backdrop-blur-md border-b border-white/20'
+                ? 'bg-white/95 backdrop-blur-xl border-b border-orange-100/50 shadow-md shadow-orange-500/5 py-2'
+                : 'bg-gradient-to-b from-white to-white/80 backdrop-blur-md border-b border-white/20 py-4'
                 }`}
         >
             {/* Ambient Orange Glow */}
@@ -138,14 +137,14 @@ export function Header({ user }: HeaderProps) {
             {/* Ambient Glow */}
             <div className="absolute -top-10 left-1/4 w-96 h-20 bg-orange-500/10 blur-[60px] pointer-events-none rounded-full" />
 
-            <div className={`container mx-auto px-4 transition-all duration-300 ${scrolled ? 'py-4 md:py-4' : 'py-4 md:py-6'}`}>
+            <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between gap-4">
                     {/* Logo Section */}
                     <Link href="/" className="flex-shrink-0 relative group flex items-center gap-2">
                         <img
                             src="/brand-logo.png"
                             alt="NeedFul"
-                            className={`transition-all duration-300 object-contain relative z-10 ${scrolled ? 'h-14 w-auto' : 'h-16 w-auto'
+                            className={`transition-all duration-300 object-contain relative z-10 ${scrolled ? 'h-10 w-auto' : 'h-12 w-auto'
                                 }`}
                         />
                     </Link>
@@ -188,7 +187,7 @@ export function Header({ user }: HeaderProps) {
                             {/* City Selector */}
                             <div className="relative border-r border-orange-100/50">
                                 <Select value={selectedCity} onValueChange={setSelectedCity}>
-                                    <SelectTrigger className="w-[140px] h-12 border-0 rounded-none bg-transparent focus:ring-0 text-gray-800 font-bold hover:bg-orange-50/30 transition-colors text-sm pl-4 pr-2">
+                                    <SelectTrigger className="w-[140px] h-12 border-0 rounded-none bg-transparent focus:ring-0 text-gray-800 font-bold hover:bg-orange-50/30 transition-colors text-sm pl-4 pr-2 focus:ring-offset-0">
                                         <MapPin className="h-4 w-4 text-[#FF5200] mr-2" fill="currentColor" fillOpacity={0.2} />
                                         <SelectValue />
                                     </SelectTrigger>
@@ -217,7 +216,7 @@ export function Header({ user }: HeaderProps) {
                                     placeholder="Search for services..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="h-10 border-0 rounded-none focus-visible:ring-0"
+                                    className="h-12 border-0 rounded-none focus-visible:ring-0 text-sm pl-4"
                                 />
                                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                             </div>
