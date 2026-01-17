@@ -80,7 +80,7 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
         <div className="min-h-screen flex flex-col bg-gray-50">
             <Header />
 
-            <main className="flex-1 container mx-auto px-4 pt-24 pb-8">
+            <main className="flex-1 container mx-auto px-4 pt-32 pb-8">
                 <div className="flex flex-col md:flex-row gap-8 items-start">
 
                     {/* Sidebar / User Card */}
@@ -163,7 +163,7 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
 
                     {/* Main Content */}
                     <div className="flex-1 min-w-0">
-                        <Tabs defaultValue={defaultTab} className="w-full" onValueChange={(val) => router.push(`/profile?tab=${val}`)}>
+                        <Tabs value={defaultTab} className="w-full" onValueChange={(val) => router.push(`/profile?tab=${val}`)}>
                             <TabsContent value="profile" className="mt-0 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <Card className="border-0 shadow-lg shadow-gray-100/50 bg-white rounded-2xl">
                                     <CardHeader className="pb-2">
