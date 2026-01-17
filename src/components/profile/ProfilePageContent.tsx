@@ -13,6 +13,7 @@ import { ServiceCard } from '@/components/listing/ServiceCard'
 import { User, LogOut, Heart, Settings, Shield } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+import { SectionHeading } from '@/components/ui/SectionHeading'
 import type { ProviderWithDetails } from '@/types/database'
 
 interface ProfilePageContentProps {
@@ -80,7 +81,7 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
         <div className="min-h-screen flex flex-col bg-gray-50">
             <Header />
 
-            <main className="flex-1 container mx-auto px-4 pt-32 pb-8">
+            <main className="flex-1 container mx-auto px-4 pt-36 pb-8">
                 <div className="flex flex-col md:flex-row gap-8 items-start">
 
                     {/* Sidebar / User Card */}
@@ -165,12 +166,11 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
                     <div className="flex-1 min-w-0">
                         <Tabs value={defaultTab} className="w-full" onValueChange={(val) => router.push(`/profile?tab=${val}`)}>
                             <TabsContent value="profile" className="mt-0 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <SectionHeading subtitle="Manage your personal details and preferences.">
+                                    Personal Information
+                                </SectionHeading>
                                 <Card className="border-0 shadow-lg shadow-gray-100/50 bg-white rounded-2xl">
-                                    <CardHeader className="pb-2">
-                                        <CardTitle className="text-xl">Personal Information</CardTitle>
-                                        <CardDescription>Manage your personal details and preferences.</CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="space-y-6 pt-4">
+                                    <CardContent className="space-y-6 pt-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
                                                 <Label htmlFor="name" className="text-sm font-semibold text-gray-700">Full Name</Label>
@@ -217,10 +217,9 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
                             </TabsContent>
 
                             <TabsContent value="favorites" className="mt-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <div className="mb-6">
-                                    <h2 className="text-2xl font-bold text-gray-900">My Favorites</h2>
-                                    <p className="text-gray-500">Manage your saved service providers.</p>
-                                </div>
+                                <SectionHeading subtitle="Manage your saved service providers.">
+                                    My Favorites
+                                </SectionHeading>
 
                                 {favorites.length > 0 ? (
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
