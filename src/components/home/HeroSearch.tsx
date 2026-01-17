@@ -80,8 +80,8 @@ export function HeroSearch() {
         >
             {/* Background Gradients */}
             {/* Background Gradients - Enhanced Orange Theme */}
-            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-orange-100/60 via-orange-200/40 to-amber-100/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 animate-pulse-slow" />
-            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-orange-50/50 via-amber-50/30 to-blue-50/20 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3" />
+            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-orange-100/60 via-orange-200/40 to-amber-100/20 rounded-full blur-[60px] -translate-y-1/2 translate-x-1/2 will-change-transform" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-orange-50/50 via-amber-50/30 to-blue-50/20 rounded-full blur-[60px] translate-y-1/3 -translate-x-1/3 will-change-transform" />
 
             {/* Additional 3D Floating Elements in Hero */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -120,14 +120,14 @@ export function HeroSearch() {
 
                         {/* Search Bar with 3D Tilt */}
                         <motion.div
-                            className="bg-white p-3 rounded-2xl shadow-xl shadow-orange-500/5 border border-gray-100 flex flex-col md:flex-row items-center gap-3 max-w-2xl mx-auto lg:mx-0 transform transition-transform"
+                            className="bg-white p-3 rounded-2xl shadow-xl shadow-orange-500/5 border border-gray-100 flex flex-col md:flex-row items-center gap-3 max-w-2xl mx-auto lg:mx-0 transform transition-transform will-change-transform"
                             style={{
-                                rotateX: mousePosition.y * 10, // Tilt based on mouse Y
-                                rotateY: mousePosition.x * -10, // Tilt based on mouse X
+                                rotateX: mousePosition.y * 5, // Reduced tilt for smoothness
+                                rotateY: mousePosition.x * -5, // Reduced tilt for smoothness
                                 perspective: 1000
                             }}
-                            whileHover={{ scale: 1.02 }}
-                            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                            whileHover={{ scale: 1.01 }}
+                            transition={{ type: 'spring', stiffness: 150, damping: 25 }}
                         >
                             <div className="relative w-full md:w-48">
                                 <div className="absolute left-5 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
@@ -166,9 +166,9 @@ export function HeroSearch() {
                     {/* Right Content: Advanced Orbital Animation with Parallax */}
                     <div className="flex-1 w-full relative h-[400px] md:h-[600px] hidden md:flex items-center justify-center perspective-[1000px]">
                         <div
-                            className="relative w-[300px] md:w-[600px] h-[300px] md:h-[600px] flex items-center justify-center transform-style-3d transition-transform duration-100 ease-out"
+                            className="relative w-[300px] md:w-[600px] h-[300px] md:h-[600px] flex items-center justify-center transform-style-3d transition-transform duration-200 ease-out will-change-transform"
                             style={{
-                                transform: `rotateX(${mousePosition.y * 20}deg) rotateY(${mousePosition.x * -20}deg)`
+                                transform: `rotateX(${mousePosition.y * 8}deg) rotateY(${mousePosition.x * -8}deg)`
                             }}
                         >
 

@@ -10,23 +10,23 @@ export function AnimatedBackground() {
     const mouseX = useMotionValue(0)
     const mouseY = useMotionValue(0)
 
-    // Smooth spring animation for mouse movement
-    const springConfig = { damping: 25, stiffness: 150 }
+    // Smooth spring animation for mouse movement - optimized for performance
+    const springConfig = { damping: 35, stiffness: 100, mass: 0.5 }
     const springX = useSpring(mouseX, springConfig)
     const springY = useSpring(mouseY, springConfig)
 
-    // Transform values for different layers (parallax effect)
-    const moveX1 = useTransform(springX, [0, 1], [-20, 20])
-    const moveY1 = useTransform(springY, [0, 1], [-20, 20])
+    // Transform values for different layers (parallax effect) - reduced intensity
+    const moveX1 = useTransform(springX, [0, 1], [-10, 10])
+    const moveY1 = useTransform(springY, [0, 1], [-10, 10])
 
-    const moveX2 = useTransform(springX, [0, 1], [30, -30])
-    const moveY2 = useTransform(springY, [0, 1], [30, -30])
+    const moveX2 = useTransform(springX, [0, 1], [15, -15])
+    const moveY2 = useTransform(springY, [0, 1], [15, -15])
 
-    const moveX3 = useTransform(springX, [0, 1], [-50, 50])
-    const moveY3 = useTransform(springY, [0, 1], [-50, 50])
+    const moveX3 = useTransform(springX, [0, 1], [-25, 25])
+    const moveY3 = useTransform(springY, [0, 1], [-25, 25])
 
-    const rotateX = useTransform(springY, [0, 1], [5, -5])
-    const rotateY = useTransform(springX, [0, 1], [-5, 5])
+    const rotateX = useTransform(springY, [0, 1], [2, -2])
+    const rotateY = useTransform(springX, [0, 1], [-2, 2])
 
     useEffect(() => {
         setMounted(true)
@@ -45,7 +45,7 @@ export function AnimatedBackground() {
     if (!mounted) return null
 
     return (
-        <div className="fixed inset-0 min-h-screen w-full -z-50 overflow-hidden pointer-events-none bg-white perspective-[1000px]">
+        <div className="fixed inset-0 min-h-screen w-full -z-50 overflow-hidden pointer-events-none bg-white perspective-[1000px] will-change-transform">
             {/* Base Gradient Mesh */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,247,237,0.8),rgba(255,255,255,1))]" />
 
@@ -74,14 +74,14 @@ export function AnimatedBackground() {
 
             {/* Large Orange Orb (Left) */}
             <motion.div
-                className="absolute top-[20%] left-[5%] w-[500px] h-[500px] bg-gradient-to-br from-orange-200/20 to-amber-100/20 rounded-full blur-[100px]"
+                className="absolute top-[20%] left-[5%] w-[500px] h-[500px] bg-gradient-to-br from-orange-200/20 to-amber-100/20 rounded-full blur-[60px] will-change-transform"
                 style={{ x: moveX2, y: moveY2 }}
                 animate={{
                     scale: [1, 1.1, 1],
                     opacity: [0.5, 0.7, 0.5]
                 }}
                 transition={{
-                    duration: 10,
+                    duration: 15,
                     repeat: Infinity,
                     ease: "easeInOut"
                 }}
@@ -89,20 +89,20 @@ export function AnimatedBackground() {
 
             {/* Blue Contrast Orb (Bottom Right) */}
             <motion.div
-                className="absolute bottom-[10%] right-[5%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-100/20 to-indigo-100/10 rounded-full blur-[120px]"
+                className="absolute bottom-[10%] right-[5%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-100/20 to-indigo-100/10 rounded-full blur-[70px] will-change-transform"
                 style={{ x: moveX2, y: moveY2 }}
             />
 
             {/* Geometric Floating Elements */}
             {/* Extra Orange Depth Layer */}
             <motion.div
-                className="absolute top-[60%] left-[70%] w-[400px] h-[400px] bg-gradient-to-tl from-orange-300/10 to-transparent rounded-full blur-[80px]"
+                className="absolute top-[60%] left-[70%] w-[400px] h-[400px] bg-gradient-to-tl from-orange-300/10 to-transparent rounded-full blur-[50px] will-change-transform"
                 style={{ x: moveX2, y: moveY2 }}
                 animate={{
                     scale: [1, 1.2, 1],
                     opacity: [0.3, 0.5, 0.3]
                 }}
-                transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
             />
 
             {/* Element 1: Orange Diamond */}
@@ -114,7 +114,7 @@ export function AnimatedBackground() {
                     rotate: [45, 90, 45]
                 }}
                 transition={{
-                    duration: 8,
+                    duration: 12,
                     repeat: Infinity,
                     ease: "easeInOut"
                 }}
@@ -129,7 +129,7 @@ export function AnimatedBackground() {
                     borderColor: ["rgba(255,210,180,0.3)", "rgba(255,82,0,0.1)", "rgba(255,210,180,0.3)"]
                 }}
                 transition={{
-                    duration: 6,
+                    duration: 10,
                     repeat: Infinity,
                     ease: "easeInOut"
                 }}

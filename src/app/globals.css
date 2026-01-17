@@ -67,6 +67,10 @@
     border-color: var(--border);
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--background);
     color: var(--foreground);
@@ -74,6 +78,9 @@
     font-family: 'Inter', sans-serif;
     cursor: none;
     /* Custom cursor support */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   /* Accessibility & Cursor Logic */
@@ -145,6 +152,25 @@
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* GPU Acceleration Utilities */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  .smooth-transition {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 

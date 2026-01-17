@@ -12,18 +12,18 @@ export function CustomCursor() {
     const mouseX = useMotionValue(0)
     const mouseY = useMotionValue(0)
 
-    // Smooth physics
-    const springConfig = { damping: 30, stiffness: 350, mass: 0.5 }
+    // Smooth physics - optimized for butter-smooth performance
+    const springConfig = { damping: 40, stiffness: 200, mass: 0.3 }
     const cursorX = useSpring(mouseX, springConfig)
     const cursorY = useSpring(mouseY, springConfig)
 
-    // Velocity for deformation (Fluid feel)
+    // Velocity for deformation (optimized thresholds)
     const velocityX = useVelocity(cursorX)
     const velocityY = useVelocity(cursorY)
 
-    // Subtle Stretch on move
-    const scaleX = useTransform(velocityX, [-3000, 0, 3000], [0.8, 1, 0.8])
-    const scaleY = useTransform(velocityY, [-3000, 0, 3000], [0.8, 1, 0.8])
+    // Subtle Stretch on move (reduced for smoothness)
+    const scaleX = useTransform(velocityX, [-2000, 0, 2000], [0.9, 1, 0.9])
+    const scaleY = useTransform(velocityY, [-2000, 0, 2000], [0.9, 1, 0.9])
 
     const pathname = usePathname()
 
@@ -78,7 +78,7 @@ export function CustomCursor() {
         <div className="fixed inset-0 pointer-events-none z-[99999] overflow-hidden">
             {/* 1. Fluid Outer Ring - White/Semi-transparent Black Mix */}
             <motion.div
-                className="absolute top-0 left-0 border-[1.5px] border-black/80 bg-white/10 backdrop-blur-[1px] rounded-full shadow-sm"
+                className="absolute top-0 left-0 border-[1.5px] border-black/80 bg-white/10 backdrop-blur-[1px] rounded-full shadow-sm will-change-transform"
                 style={{
                     x: cursorX,
                     y: cursorY,
@@ -95,8 +95,8 @@ export function CustomCursor() {
                 }}
                 transition={{
                     type: "spring",
-                    stiffness: 400,
-                    damping: 28
+                    stiffness: 300,
+                    damping: 35
                 }}
             />
 
