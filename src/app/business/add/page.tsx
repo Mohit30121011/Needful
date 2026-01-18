@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { BusinessFormWizard } from "@/components/business/BusinessFormWizard";
 import { createClient } from "@/lib/supabase/server";
 import { AnimatedBackgroundLight, ParticleBackground } from "@/components/auth/AnimatedBackground";
+import { Briefcase } from 'lucide-react';
 
 export default async function AddBusinessPage() {
     const supabase = await createClient();
@@ -23,10 +24,11 @@ export default async function AddBusinessPage() {
                 <Header />
             </div>
 
-            <main className="flex-1 container mx-auto px-4 py-8 md:py-16 max-w-5xl relative z-10">
+            <main className="flex-1 container mx-auto px-4 pt-32 pb-8 md:pt-36 md:pb-16 max-w-5xl relative z-10">
                 <div className="text-center mb-12 space-y-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-orange-100 text-orange-700 font-bold text-sm mb-2 border border-orange-200">
-                        🚀 Partner with Us
+                    <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-100 text-orange-700 font-bold text-sm border border-orange-200">
+                        <Briefcase className="w-4 h-4" />
+                        Partner with Us
                     </span>
                     <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight">
                         Grow your business with <span className="bg-gradient-to-r from-orange-500 via-red-500 to-amber-500 bg-clip-text text-transparent transform hover:scale-105 transition-transform inline-block cursor-default">Needful</span>

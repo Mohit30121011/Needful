@@ -160,7 +160,7 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
                                 <div className="text-sm font-medium">
                                     <button
                                         onClick={() => router.push('/profile?tab=profile')}
-                                        className={`w-full text-left px-5 py-4 flex items-center gap-4 transition-all ${defaultTab === 'profile' ? 'text-[#FF5200] bg-orange-50 border-l-4 border-[#FF5200]' : 'text-gray-700 hover:bg-gray-50 border-l-4 border-transparent'}`}
+                                        className={`w-full text-left px-5 py-4 flex items-center gap-4 transition-all cursor-pointer ${defaultTab === 'profile' ? 'text-[#FF5200] bg-orange-50 border-l-4 border-[#FF5200]' : 'text-gray-700 hover:bg-gray-50 border-l-4 border-transparent'}`}
                                     >
                                         <div className={`p-2 rounded-lg ${defaultTab === 'profile' ? 'bg-orange-100' : 'bg-gray-100'}`}>
                                             <User className={`h-4 w-4 ${defaultTab === 'profile' ? 'text-[#FF5200]' : 'text-gray-500'}`} />
@@ -169,7 +169,7 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
                                     </button>
                                     <button
                                         onClick={() => router.push('/profile?tab=favorites')}
-                                        className={`w-full text-left px-5 py-4 flex items-center gap-4 transition-all ${defaultTab === 'favorites' ? 'text-[#FF5200] bg-orange-50 border-l-4 border-[#FF5200]' : 'text-gray-700 hover:bg-gray-50 border-l-4 border-transparent'}`}
+                                        className={`w-full text-left px-5 py-4 flex items-center gap-4 transition-all cursor-pointer ${defaultTab === 'favorites' ? 'text-[#FF5200] bg-orange-50 border-l-4 border-[#FF5200]' : 'text-gray-700 hover:bg-gray-50 border-l-4 border-transparent'}`}
                                     >
                                         <div className={`p-2 rounded-lg ${defaultTab === 'favorites' ? 'bg-orange-100' : 'bg-gray-100'}`}>
                                             <Heart className={`h-4 w-4 ${defaultTab === 'favorites' ? 'text-[#FF5200]' : 'text-gray-500'}`} />
@@ -178,7 +178,7 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
                                     </button>
                                     <button
                                         onClick={() => toast.info('Account Settings coming soon!')}
-                                        className="w-full text-left px-5 py-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent"
+                                        className="w-full text-left px-5 py-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent cursor-pointer"
                                     >
                                         <div className="p-2 rounded-lg bg-gray-100">
                                             <Settings className="h-4 w-4 text-gray-500" />
@@ -187,7 +187,7 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
                                     </button>
                                     <button
                                         onClick={() => toast.info('Privacy & Security settings coming soon!')}
-                                        className="w-full text-left px-5 py-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent"
+                                        className="w-full text-left px-5 py-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent cursor-pointer"
                                     >
                                         <div className="p-2 rounded-lg bg-gray-100">
                                             <Shield className="h-4 w-4 text-gray-500" />
@@ -198,7 +198,7 @@ export function ProfilePageContent({ favorites: initialFavorites, user }: Profil
                                 <div className="h-px bg-gray-100"></div>
                                 <button
                                     onClick={handleLogout}
-                                    className="w-full text-left px-5 py-4 flex items-center gap-4 text-red-600 hover:bg-red-50 transition-all"
+                                    className="w-full text-left px-5 py-4 flex items-center gap-4 text-red-600 hover:bg-red-50 transition-all cursor-pointer"
                                 >
                                     <div className="p-2 rounded-lg bg-red-50">
                                         <LogOut className="h-4 w-4 text-red-500" />

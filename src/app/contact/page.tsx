@@ -62,37 +62,62 @@ export default function ContactPage() {
                             </div>
 
                             {/* Contact Form */}
-                            <div className="lg:col-span-2 bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-gray-100 relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                            <div className="lg:col-span-2 relative">
+                                {/* Outer gradient border */}
+                                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5200] via-orange-400 to-amber-400 rounded-[2.5rem] opacity-20 blur-sm"></div>
 
-                                <h2 className="text-2xl font-black text-gray-900 mb-8">Send a Message</h2>
-                                <form className="space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-gray-700 ml-1">Your Name</label>
-                                            <input type="text" placeholder="John Doe" className="w-full h-14 px-6 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-orange-500/20 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900" />
+                                <div className="relative bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-orange-100">
+                                    {/* Decorative corner gradients */}
+                                    <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-orange-500/10 to-transparent rounded-full blur-2xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+                                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-amber-400/10 to-transparent rounded-full blur-2xl translate-y-1/4 -translate-x-1/4 pointer-events-none"></div>
+
+                                    <h2 className="text-2xl font-black text-gray-900 mb-2">Send a Message</h2>
+                                    <p className="text-gray-500 text-sm mb-8">We'll get back to you within 24 hours</p>
+
+                                    <form className="space-y-6 relative z-10">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-bold text-gray-700 ml-1">Your Name</label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="John Doe"
+                                                    className="w-full h-14 px-6 rounded-xl bg-gradient-to-r from-gray-50 to-orange-50/30 border-2 border-gray-100 focus:bg-white focus:border-[#FF5200]/30 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900 placeholder:text-gray-400 cursor-pointer"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-bold text-gray-700 ml-1">Your Email</label>
+                                                <input
+                                                    type="email"
+                                                    placeholder="john@example.com"
+                                                    className="w-full h-14 px-6 rounded-xl bg-gradient-to-r from-gray-50 to-orange-50/30 border-2 border-gray-100 focus:bg-white focus:border-[#FF5200]/30 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900 placeholder:text-gray-400 cursor-pointer"
+                                                />
+                                            </div>
                                         </div>
+
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-gray-700 ml-1">Your Email</label>
-                                            <input type="email" placeholder="john@example.com" className="w-full h-14 px-6 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-orange-500/20 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900" />
+                                            <label className="text-sm font-bold text-gray-700 ml-1">Subject</label>
+                                            <input
+                                                type="text"
+                                                placeholder="How can we help?"
+                                                className="w-full h-14 px-6 rounded-xl bg-gradient-to-r from-gray-50 to-orange-50/30 border-2 border-gray-100 focus:bg-white focus:border-[#FF5200]/30 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900 placeholder:text-gray-400 cursor-pointer"
+                                            />
                                         </div>
-                                    </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-bold text-gray-700 ml-1">Subject</label>
-                                        <input type="text" placeholder="How can we help?" className="w-full h-14 px-6 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-orange-500/20 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900" />
-                                    </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-gray-700 ml-1">Message</label>
+                                            <textarea
+                                                rows={5}
+                                                placeholder="Tell us more..."
+                                                className="w-full p-6 rounded-xl bg-gradient-to-r from-gray-50 to-orange-50/30 border-2 border-gray-100 focus:bg-white focus:border-[#FF5200]/30 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900 resize-none placeholder:text-gray-400 cursor-pointer"
+                                            ></textarea>
+                                        </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-bold text-gray-700 ml-1">Message</label>
-                                        <textarea rows={5} placeholder="Tell us more..." className="w-full p-6 rounded-xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-orange-500/20 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900 resize-none"></textarea>
-                                    </div>
-
-                                    <Button className="w-full h-14 bg-gradient-to-r from-[#FF5200] to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-lg font-bold shadow-lg shadow-orange-500/25 transform hover:scale-[1.01] transition-all">
-                                        Send Message
-                                        <Send className="w-5 h-5 ml-2" />
-                                    </Button>
-                                </form>
+                                        <Button className="w-full h-14 bg-gradient-to-r from-[#FF5200] via-orange-500 to-amber-500 hover:from-[#E04800] hover:via-orange-600 hover:to-amber-600 text-white rounded-xl text-lg font-bold shadow-xl shadow-orange-500/30 transform hover:scale-[1.02] hover:shadow-orange-500/40 transition-all cursor-pointer">
+                                            Send Message
+                                            <Send className="w-5 h-5 ml-2" />
+                                        </Button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
