@@ -76,26 +76,26 @@
     color: var(--foreground);
     @apply antialiased;
     font-family: 'Inter', sans-serif;
-    cursor: none;
+    cursor: url("/assets/cursor.svg") 2 2, auto !important;
     /* Custom cursor support */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
+  /* Force Custom Cursor on everything except text inputs */
+  *:not(input):not(textarea) {
+    cursor: url("/assets/cursor.svg") 2 2, auto !important;
+  }
+
   /* Accessibility & Cursor Logic */
   a,
   button,
   [role="button"],
-  input[type="submit"],
-  input[type="button"],
-  input[type="reset"],
-  input[type="checkbox"],
-  input[type="radio"],
   select,
   label[for],
   .cursor-pointer {
-    cursor: none;
+    cursor: url("/assets/cursor.svg") 2 2, pointer !important;
   }
 }
 

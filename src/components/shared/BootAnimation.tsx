@@ -6,6 +6,8 @@ import Image from 'next/image'
 
 export function BootAnimation() {
     const [isBooting, setIsBooting] = useState(true)
+    // Generate random particles only on client to prevent hydration mismatch
+    const [particles, setParticles] = useState<Array<{ top: string, left: string }>>([])
 
     useEffect(() => {
         // Session check - enabled for production
@@ -35,41 +37,24 @@ export function BootAnimation() {
                     }}
                     className="fixed inset-0 z-[9999] bg-white flex items-center justify-center overflow-hidden"
                 >
-                    {/* Background Gradients matching AnimatedBackground with Entrance Animation */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,247,237,0.8),rgba(255,255,255,1))]" />
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 1.5, ease: "easeOut" }}
-                        className="absolute top-[20%] left-[5%] w-[500px] h-[500px] bg-gradient-to-br from-orange-200/20 to-amber-100/20 rounded-full blur-[100px]"
-                    />
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
-                        className="absolute bottom-[10%] right-[5%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-100/20 to-indigo-100/10 rounded-full blur-[120px]"
-                    />
-
-                    {/* Subtle Floating Particles for Depth */}
-                    {[...Array(6)].map((_, i) => (
+                    {/* Floating Particles */}
+                    {particles.map((p, i) => (
                         <motion.div
                             key={i}
                             className="absolute w-1 h-1 bg-orange-400/30 rounded-full"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{
-                                opacity: [0, 0.5, 0],
-                                y: -40,
-                                x: (i % 2 === 0 ? 10 : -10)
+                                opacity: [0, 0.6, 0],
+                                y: -40
                             }}
                             transition={{
-                                duration: 3 + Math.random() * 2,
+                                duration: 2 + Math.random() * 2,
                                 repeat: Infinity,
-                                delay: i * 0.4,
-                                ease: "easeOut"
+                                delay: Math.random() * 2
                             }}
                             style={{
-                                top: `${30 + Math.random() * 40}%`,
-                                left: `${30 + Math.random() * 40}%`
+                                top: p.top,
+                                left: p.left
                             }}
                         />
                     ))}
