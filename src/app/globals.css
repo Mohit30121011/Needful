@@ -76,8 +76,7 @@
     color: var(--foreground);
     @apply antialiased;
     font-family: var(--font-inter), 'Inter', sans-serif;
-    cursor: url("/assets/cursor.svg") 2 2, auto !important;
-    /* Custom cursor support */
+    /* Custom cursor removed - utilizing system default */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -93,21 +92,6 @@
     font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
     font-weight: 800;
     letter-spacing: -0.02em;
-  }
-
-  /* Force Custom Cursor on everything except text inputs */
-  *:not(input):not(textarea) {
-    cursor: url("/assets/cursor.svg") 2 2, auto !important;
-  }
-
-  /* Accessibility & Cursor Logic */
-  a,
-  button,
-  [role="button"],
-  select,
-  label[for],
-  .cursor-pointer {
-    cursor: url("/assets/cursor.svg") 2 2, pointer !important;
   }
 }
 

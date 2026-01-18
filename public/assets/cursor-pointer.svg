@@ -2,12 +2,12 @@
   <filter id="shadow" x="0" y="0" width="32" height="32" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
     <feFlood flood-opacity="0" result="BackgroundImageFix"/>
     <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-    <feOffset dy="2"/>
-    <feGaussianBlur stdDeviation="2"/>
+    <feOffset dy="3"/>
+    <feGaussianBlur stdDeviation="3"/>
     <feComposite in2="hardAlpha" operator="out"/>
-    <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.32 0 0 0 0 0 0 0 0 0.3 0"/>
+    <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.32 0 0 0 0 0 0 0 0 0.5 0"/>
     <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
     <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
   </filter>
-  <path d="M6 4L24 20L15 21L13 28L6 4Z" fill="#FF5200" stroke="white" stroke-width="2" stroke-linejoin="round" filter="url(#shadow)"/>
+  <path d="M5 3L26 21L16 22L14 30L5 3Z" fill="#FF5200" stroke="white" stroke-width="2" stroke-linejoin="round" transform="rotate(-15 15 16)" filter="url(#shadow)"/>
 </svg>

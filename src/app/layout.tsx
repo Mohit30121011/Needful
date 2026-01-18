@@ -36,6 +36,7 @@ export default function RootLayout({
         {/* Custom Cursor */}
 
 
+
         {/* Boot Animation */}
         <ClientBootAnimation />
 
