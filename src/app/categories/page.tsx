@@ -38,12 +38,12 @@ export default function CategoriesPage() {
         <div className="min-h-screen flex flex-col bg-white">
             <Header />
 
-            <main className="flex-1 bg-[#FFFBF7] relative overflow-hidden">
+            <main className="flex-1 bg-[#FFFBF7] relative overflow-hidden pt-28">
                 {/* Background Gradients */}
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-100/60 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-100/60 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3 pointer-events-none" />
 
-                <div className="container mx-auto px-4 py-16 relative z-10">
+                <div className="container mx-auto px-4 py-12 relative z-10">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight">
                             Explore All <span className="text-[#FF5200]">Categories</span>

@@ -16,9 +16,9 @@ export default function AboutPage() {
         <div className="min-h-screen flex flex-col bg-white">
             <Header />
 
-            <main className="flex-1 overflow-hidden">
+            <main className="flex-1 overflow-hidden pt-24">
                 {/* Hero Section */}
-                <section className="relative py-20 lg:py-32 bg-[#FFFBF7]">
+                <section className="relative py-16 lg:py-24 bg-[#FFFBF7]">
                     <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-100/60 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                     <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-100/60 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3 pointer-events-none" />
 
@@ -60,7 +60,7 @@ export default function AboutPage() {
                                 <img
                                     src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"
                                     alt="Team working"
-                                    className="relative rounded-3xl shadow-2xl transform -rotate-2 hover:rotate-0 transition-transform duration-500 w-full object-cover h-[400px]"
+                                    className="relative rounded-3xl shadow-2xl hover:scale-[1.02] transition-transform duration-500 w-full object-cover h-[400px]"
                                 />
                             </div>
                             <div className="flex-1">
