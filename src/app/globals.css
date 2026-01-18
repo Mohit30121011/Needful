@@ -69,6 +69,31 @@
 
   html {
     scroll-behavior: smooth;
+    scrollbar-width: thin;
+    /* Firefox */
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    /* Firefox */
+  }
+
+  /* Webkit / Chrome / Safari Scrollbar */
+  html::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: transparent;
+  }
+
+  html::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  html::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+  }
+
+  html::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 82, 0, 0.8);
+    /* NeedFul Orange on hover */
   }
 
   body {
@@ -76,8 +101,7 @@
     color: var(--foreground);
     @apply antialiased;
     font-family: var(--font-inter), 'Inter', sans-serif;
-    cursor: url("/assets/cursor.svg") 2 2, auto !important;
-    /* Custom cursor support */
+    /* Custom cursor removed - utilizing system default */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -93,21 +117,6 @@
     font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
     font-weight: 800;
     letter-spacing: -0.02em;
-  }
-
-  /* Force Custom Cursor on everything except text inputs */
-  *:not(input):not(textarea) {
-    cursor: url("/assets/cursor.svg") 2 2, auto !important;
-  }
-
-  /* Accessibility & Cursor Logic */
-  a,
-  button,
-  [role="button"],
-  select,
-  label[for],
-  .cursor-pointer {
-    cursor: url("/assets/cursor.svg") 2 2, pointer !important;
   }
 }
 
