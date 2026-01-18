@@ -18,16 +18,22 @@ export default function AboutPage() {
 
             <main className="flex-1 overflow-hidden">
                 {/* Hero Section */}
-                <section className="relative py-20 lg:py-32 bg-[#FFFBF7]">
+                <section className="relative pt-32 pb-16 lg:pt-40 lg:pb-24 bg-[#FFFBF7]">
                     <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-100/60 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                     <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-100/60 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3 pointer-events-none" />
 
                     <div className="container mx-auto px-4 relative z-10 text-center">
-                        <span className="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-600 font-bold text-xs uppercase tracking-wider mb-6">Our Story</span>
-                        <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight leading-tight">
+                        <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-4 tracking-tight leading-tight">
                             Empowering <span className="text-[#FF5200]">Local Experts.</span><br />
-                            Simplifying Your Life.
+                            <span className="relative inline-block">
+                                Simplifying Your Life.
+                                {/* Orange underline */}
+                                <svg className="absolute w-full h-3 -bottom-2 left-0 text-[#FF5200]/80" viewBox="0 0 100 10" preserveAspectRatio="none">
+                                    <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="6" fill="none" />
+                                </svg>
+                            </span>
                         </h1>
+                        <span className="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-600 font-bold text-xs uppercase tracking-wider mt-6 mb-6">Our Story</span>
                         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                             Needful is on a mission to connect reliable service professionals with the people who need them most – instanly, securely, and seamlessly.
                         </p>
@@ -60,7 +66,7 @@ export default function AboutPage() {
                                 <img
                                     src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"
                                     alt="Team working"
-                                    className="relative rounded-3xl shadow-2xl transform -rotate-2 hover:rotate-0 transition-transform duration-500 w-full object-cover h-[400px]"
+                                    className="relative rounded-3xl shadow-2xl hover:scale-[1.02] transition-transform duration-500 w-full object-cover h-[400px]"
                                 />
                             </div>
                             <div className="flex-1">

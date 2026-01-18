@@ -29,13 +29,13 @@ const footerLinks = {
 
 export function Footer() {
     return (
-        <footer className="bg-[#0f0718] text-gray-300 relative overflow-hidden">
+        <footer className="bg-gradient-to-b from-white to-orange-50 text-gray-700 relative overflow-hidden">
             {/* Top Gradient Line */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-purple-600 opacity-50" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FF5200] via-orange-400 to-amber-400" />
 
-            {/* Background Glow */}
-            <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] bg-orange-900/10 rounded-full blur-[120px]" />
-            <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-900/10 rounded-full blur-[120px]" />
+            {/* Background Decorations */}
+            <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] bg-orange-100/50 rounded-full blur-[120px]" />
+            <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] bg-amber-100/30 rounded-full blur-[120px]" />
 
             {/* Main Footer */}
             <div className="container mx-auto px-4 py-16 relative z-10">
@@ -51,7 +51,7 @@ export function Footer() {
                         </p>
                         <div className="flex gap-4">
                             {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
-                                <a key={i} href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:bg-[#FF5200] hover:text-white hover:border-[#FF5200] transition-all duration-300 group">
+                                <a key={i} href="#" className="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-[#FF5200] hover:text-white hover:border-[#FF5200] transition-all duration-300 group cursor-pointer">
                                     <Icon className="h-4 w-4 transform group-hover:scale-110 transition-transform" />
                                 </a>
                             ))}
@@ -62,7 +62,7 @@ export function Footer() {
                     <div className="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
                         {/* Company */}
                         <div>
-                            <h4 className="text-white font-bold text-lg mb-6">Company</h4>
+                            <h4 className="text-gray-900 font-bold text-lg mb-6">Company</h4>
                             <ul className="space-y-4">
                                 {footerLinks.company.map((link) => (
                                     <li key={link.href}>
@@ -77,7 +77,7 @@ export function Footer() {
 
                         {/* Used For */}
                         <div>
-                            <h4 className="text-white font-bold text-lg mb-6">Explore</h4>
+                            <h4 className="text-gray-900 font-bold text-lg mb-6">Explore</h4>
                             <ul className="space-y-4">
                                 {footerLinks.forUsers.map((link) => (
                                     <li key={link.href}>
@@ -92,7 +92,7 @@ export function Footer() {
 
                         {/* Categories */}
                         <div>
-                            <h4 className="text-white font-bold text-lg mb-6">Popular</h4>
+                            <h4 className="text-gray-900 font-bold text-lg mb-6">Popular</h4>
                             <ul className="space-y-4">
                                 {footerLinks.categories.map((link) => (
                                     <li key={link.href}>
@@ -109,16 +109,16 @@ export function Footer() {
             </div>
 
             {/* Bottom Bar */}
-            <div className="border-t border-white/5 bg-black/20">
+            <div className="border-t border-orange-100 bg-orange-50/50">
                 <div className="container mx-auto px-4 py-6">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-500">
                             © {new Date().getFullYear()} Needful Inc. All rights reserved.
                         </p>
-                        <div className="flex items-center gap-6 text-sm text-gray-600">
-                            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-                            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-                            <Link href="/sitemap" className="hover:text-white transition-colors">Sitemap</Link>
+                        <div className="flex items-center gap-6 text-sm text-gray-500">
+                            <Link href="/privacy" className="hover:text-[#FF5200] transition-colors cursor-pointer">Privacy</Link>
+                            <Link href="/terms" className="hover:text-[#FF5200] transition-colors cursor-pointer">Terms</Link>
+                            <Link href="/sitemap" className="hover:text-[#FF5200] transition-colors cursor-pointer">Sitemap</Link>
                         </div>
                     </div>
                 </div>

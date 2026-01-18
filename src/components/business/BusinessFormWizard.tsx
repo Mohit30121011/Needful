@@ -181,7 +181,7 @@ export function BusinessFormWizard({ categories }: { categories: Category[] }) {
                             </motion.div>
                         )}
 
-                        {/* STEP 2: CATEGORY Selection */}
+                        {/* STEP 2: CATEGORY Selection with Search */}
                         {step === 2 && (
                             <motion.div
                                 key="step2"
@@ -194,24 +194,120 @@ export function BusinessFormWizard({ categories }: { categories: Category[] }) {
                                     <h3 className="text-2xl font-bold text-gray-800">Choose Category</h3>
                                     <p className="text-gray-500 text-sm">Select the most relevant category for your business.</p>
                                 </div>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                    {categories.map((cat) => (
-                                        <div
-                                            key={cat.id}
-                                            onClick={() => setValue('category_id', cat.id)}
-                                            className={`cursor-pointer border rounded-xl p-4 flex flex-col items-center justify-center gap-3 transition-all duration-200 
-                                                ${selectedCategoryId === cat.id
-                                                    ? 'border-orange-500 bg-orange-50 shadow-md ring-1 ring-orange-500'
-                                                    : 'border-gray-200 bg-white hover:border-orange-300 hover:shadow-sm'
-                                                }`}
-                                        >
-                                            <div className={`p-2.5 rounded-lg transition-colors duration-200 ${selectedCategoryId === cat.id ? 'bg-orange-500 text-white shadow-sm' : 'bg-gray-100 text-gray-500 group-hover:bg-orange-100'}`}>
+
+                                {/* Category Dropdown with Search */}
+                                <div className="space-y-4">
+                                    <div className="relative">
+                                        <Controller
+                                            control={control}
+                                            name="category_id"
+                                            render={({ field }) => {
+                                                const [searchQuery, setSearchQuery] = useState('')
+                                                const [isOpen, setIsOpen] = useState(false)
+
+                                                // Use only database categories (no local fallbacks to avoid validation errors)
+                                                const filteredCategories = categories.filter(cat =>
+                                                    cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+                                                )
+
+                                                const selectedCat = categories.find(c => c.id === field.value)
+
+                                                return (
+                                                    <div className="relative">
+                                                        {/* Dropdown Trigger */}
+                                                        <div
+                                                            className={`
+                                                                w-full h-14 px-5 rounded-xl cursor-pointer flex items-center justify-between
+                                                                border-2 transition-all duration-200
+                                                                ${isOpen
+                                                                    ? 'border-[#FF5200] ring-4 ring-orange-500/10 bg-white'
+                                                                    : field.value
+                                                                        ? 'border-[#FF5200]/30 bg-orange-50/50'
+                                                                        : 'border-gray-200 bg-gray-50 hover:border-orange-300'
+                                                                }
+                                                            `}
+                                                            onClick={() => setIsOpen(!isOpen)}
+                                                        >
+                                                            <span className={`font-medium ${field.value ? 'text-gray-900' : 'text-gray-400'}`}>
+                                                                {selectedCat?.name || 'Select a category...'}
+                                                            </span>
+                                                            <ChevronRight className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
+                                                        </div>
+
+                                                        {/* Dropdown Panel */}
+                                                        {isOpen && (
+                                                            <div className="absolute z-50 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-orange-100 overflow-hidden">
+                                                                {/* Search Input */}
+                                                                <div className="p-3 border-b border-gray-100">
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder="Search categories..."
+                                                                        value={searchQuery}
+                                                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                                                        className="w-full h-12 px-4 rounded-xl bg-gradient-to-r from-gray-50 to-orange-50/30 border border-gray-200 focus:border-[#FF5200] focus:ring-2 focus:ring-orange-500/20 outline-none transition-all text-gray-900 placeholder:text-gray-400"
+                                                                        onClick={(e) => e.stopPropagation()}
+                                                                    />
+                                                                </div>
+
+                                                                {/* Categories List */}
+                                                                <div className="max-h-64 overflow-y-auto p-2">
+                                                                    {filteredCategories.length > 0 ? (
+                                                                        filteredCategories.map((cat) => (
+                                                                            <div
+                                                                                key={cat.id}
+                                                                                onClick={() => {
+                                                                                    field.onChange(cat.id)
+                                                                                    setIsOpen(false)
+                                                                                    setSearchQuery('')
+                                                                                }}
+                                                                                className={`
+                                                                                    flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-150
+                                                                                    ${field.value === cat.id
+                                                                                        ? 'bg-orange-100 text-[#FF5200]'
+                                                                                        : 'hover:bg-orange-50 text-gray-700'
+                                                                                    }
+                                                                                `}
+                                                                            >
+                                                                                <div className={`
+                                                                                    p-2 rounded-lg transition-colors
+                                                                                    ${field.value === cat.id ? 'bg-[#FF5200] text-white' : 'bg-gray-100 text-gray-500'}
+                                                                                `}>
+                                                                                    <Building2 className="w-4 h-4" />
+                                                                                </div>
+                                                                                <span className="font-medium">{cat.name}</span>
+                                                                                {field.value === cat.id && (
+                                                                                    <Check className="w-4 h-4 ml-auto text-[#FF5200]" />
+                                                                                )}
+                                                                            </div>
+                                                                        ))
+                                                                    ) : (
+                                                                        <div className="px-4 py-8 text-center text-gray-400">
+                                                                            No categories found
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )
+                                            }}
+                                        />
+                                    </div>
+
+                                    {/* Selected category display */}
+                                    {selectedCategoryId && (
+                                        <div className="bg-gradient-to-r from-orange-50 to-amber-50 p-4 rounded-xl border border-orange-200 flex items-center gap-3">
+                                            <div className="bg-[#FF5200] p-2 rounded-lg text-white">
                                                 <Building2 className="w-5 h-5" />
                                             </div>
-                                            <span className={`font-semibold text-sm text-center ${selectedCategoryId === cat.id ? 'text-orange-700' : 'text-gray-700'}`}>{cat.name}</span>
+                                            <div>
+                                                <p className="text-xs text-orange-600 font-medium uppercase tracking-wide">Selected Category</p>
+                                                <p className="font-bold text-gray-900">{selectedCategory?.name || categories.find(c => c.id === selectedCategoryId)?.name}</p>
+                                            </div>
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
+
                                 {errors.category_id && <p className="text-red-500 text-center text-sm font-medium">{errors.category_id.message}</p>}
                             </motion.div>
                         )}
@@ -386,7 +482,7 @@ export function BusinessFormWizard({ categories }: { categories: Category[] }) {
                                 Next <ChevronRight className="w-4 h-4 ml-2" />
                             </Button>
                         ) : (
-                            <Button type="submit" disabled={isLoading} className="bg-gray-900 hover:bg-black text-white rounded-xl h-12 px-10 w-full md:w-auto shadow-lg hover:shadow-xl transition-all active:scale-[0.98] text-lg font-semibold">
+                            <Button type="submit" disabled={isLoading} className="bg-gradient-to-r from-[#FF5200] via-orange-500 to-amber-500 hover:from-[#E04800] hover:via-orange-600 hover:to-amber-600 text-white rounded-xl h-12 px-10 w-full md:w-auto shadow-xl shadow-orange-500/30 hover:shadow-orange-500/40 transition-all active:scale-[0.98] text-lg font-semibold cursor-pointer">
                                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Check className="w-5 h-5 mr-2" />}
                                 Launch Business
                             </Button>

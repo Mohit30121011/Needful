@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import { SectionHeading } from '@/components/ui/SectionHeading'
 
 const superCategories = [
     { name: 'Restaurants', slug: 'restaurants', icon: Utensils, color: 'text-orange-500', bg: 'bg-orange-50' },
@@ -37,10 +38,9 @@ export function SuperGrid() {
         <section className="py-12 bg-white relative z-10">
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3">
-                        <span className="w-1.5 h-8 bg-[#FF5200] rounded-full"></span>
+                    <SectionHeading className="mb-0">
                         Explore Categories
-                    </h2>
+                    </SectionHeading>
                     <Link href="/categories" className="text-sm font-bold text-[#FF5200] hover:underline">
                         View All
                     </Link>

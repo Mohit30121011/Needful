@@ -6,18 +6,20 @@ import Image from 'next/image'
 
 export function BootAnimation() {
     const [isBooting, setIsBooting] = useState(true)
+    // Generate random particles only on client to prevent hydration mismatch
+    const [particles, setParticles] = useState<Array<{ top: string, left: string }>>([])
 
     useEffect(() => {
-        // Session check - temporarily disabled for development testing to ensure user sees the animation
-        // if (typeof window !== 'undefined' && sessionStorage.getItem('needful-booted-corporate-v4')) {
-        //     setIsBooting(false)
-        //     return
-        // }
+        // Session check - enabled for production
+        if (typeof window !== 'undefined' && sessionStorage.getItem('needful-booted-corporate-v4')) {
+            setIsBooting(false)
+            return
+        }
 
         const timer = setTimeout(() => {
             setIsBooting(false)
             sessionStorage.setItem('needful-booted-corporate-v4', 'true')
-        }, 3800) // Total duration
+        }, 2000) // Total duration
 
         return () => clearTimeout(timer)
     }, [])
@@ -29,52 +31,110 @@ export function BootAnimation() {
                     initial={{ opacity: 1 }}
                     exit={{
                         opacity: 0,
+                        scale: 1.05,
+                        filter: "blur(10px)",
                         transition: { duration: 0.8, ease: "easeInOut" }
                     }}
                     className="fixed inset-0 z-[9999] bg-white flex items-center justify-center overflow-hidden"
                 >
-                    <div className="relative flex items-center justify-center">
-                        {/* 1. Icon Animation */}
+                    {/* Floating Particles */}
+                    {particles.map((p, i) => (
                         <motion.div
-                            initial={{ scale: 0.8, opacity: 0 }}
+                            key={i}
+                            className="absolute w-1 h-1 bg-orange-400/30 rounded-full"
+                            initial={{ opacity: 0, y: 20 }}
                             animate={{
-                                scale: [0.8, 1.1, 1], // Pulse effect
-                                opacity: 1,
-                                x: -60 // Move left to make room for text
+                                opacity: [0, 0.6, 0],
+                                y: -40
                             }}
                             transition={{
-                                scale: { duration: 0.8, times: [0, 0.6, 1], ease: "easeOut" },
-                                opacity: { duration: 0.5 },
-                                x: { delay: 1.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+                                duration: 2 + Math.random() * 2,
+                                repeat: Infinity,
+                                delay: Math.random() * 2
                             }}
-                            className="relative z-10 w-24 h-24"
-                        >
-                            <Image
-                                src="/assets/logo-icon.png"
-                                alt="NeedFul Icon"
-                                fill
-                                className="object-contain"
-                                priority
-                            />
-                        </motion.div>
+                            style={{
+                                top: p.top,
+                                left: p.left
+                            }}
+                        />
+                    ))}
 
-                        {/* 2. Text Reveal */}
+
+
+                    <div className="relative flex flex-col items-center justify-center w-full max-w-[300px] mx-auto">
+                        <div className="flex items-center justify-center gap-2 mb-8">
+                            {/* 1. Icon Animation */}
+                            <motion.div
+                                initial={{ scale: 0.8, opacity: 0 }}
+                                animate={{
+                                    scale: [0.8, 1.1, 1],
+                                    opacity: 1
+                                }}
+                                transition={{
+                                    duration: 0.5,
+                                    times: [0, 0.6, 1],
+                                    ease: "easeOut"
+                                }}
+                                className="relative z-10 w-20 h-20 flex-shrink-0"
+                            >
+                                <Image
+                                    src="/assets/logo-icon.png"
+                                    alt="NeedFul Icon"
+                                    fill
+                                    className="object-contain"
+                                    priority
+                                />
+                            </motion.div>
+
+                            {/* 2. Text Reveal (Width Expansion) */}
+                            <motion.div
+                                initial={{ width: 0, opacity: 0 }}
+                                animate={{ width: "auto", opacity: 1 }}
+                                transition={{
+                                    delay: 0.4,
+                                    duration: 0.6,
+                                    ease: "easeInOut"
+                                }}
+                                className="relative h-12 overflow-hidden flex items-center justify-start ml-2" // Reduced height slightly, added margin
+                            >
+                                <div className="relative w-40 h-full"> {/* Fixed width inner container for image */}
+                                    <Image
+                                        src="/assets/logo-text.png"
+                                        alt="NeedFul Text"
+                                        fill
+                                        className="object-contain object-left" // Align left so it reveals from left
+                                        priority
+                                    />
+                                    {/* Shimmer Overlay */}
+                                    <motion.div
+                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-12 z-20"
+                                        initial={{ x: '-150%' }}
+                                        animate={{ x: '150%' }}
+                                        transition={{
+                                            delay: 0.8,
+                                            duration: 0.6,
+                                            ease: "easeInOut"
+                                        }}
+                                    />
+                                </div>
+                            </motion.div>
+                        </div>
+
+                        {/* 3. Linear Progress Bar */}
                         <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 10 }} // Position relative to the shifted icon
-                            transition={{
-                                delay: 1.4, // Start slightly after icon movement begins
-                                duration: 0.6,
-                                ease: "easeOut"
-                            }}
-                            className="relative h-16 w-48 ml-2"
+                            className="h-1.5 bg-orange-100 rounded-full overflow-hidden w-64" // Centered by parent flex-col
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2, duration: 0.4 }}
                         >
-                            <Image
-                                src="/assets/logo-text.png"
-                                alt="NeedFul Text"
-                                fill
-                                className="object-contain"
-                                priority
+                            <motion.div
+                                className="h-full bg-orange-500 rounded-full"
+                                initial={{ width: "0%" }}
+                                animate={{ width: "100%" }}
+                                transition={{
+                                    duration: 1.8,
+                                    ease: "linear"
+                                }}
                             />
                         </motion.div>
                     </div>
