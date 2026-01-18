@@ -225,7 +225,10 @@ export function FilterSidebar({
                     isCollapsed && !isMobile && "opacity-0"
                 )}>
                     <div>
-                        <h2 className="text-xl font-bold text-gray-900 whitespace-nowrap">Filters</h2>
+                        <h2 className="text-xl font-bold text-gray-900 whitespace-nowrap relative inline-block">
+                            Filters
+                            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#FF5200]/60 rounded-full"></span>
+                        </h2>
                         <p className="text-sm text-gray-600 mt-1">{resultCount} results</p>
                     </div>
                     <button
@@ -262,7 +265,10 @@ export function FilterSidebar({
                             onClick={() => toggleSection('sortBy')}
                             className="flex items-center justify-between w-full py-2 group"
                         >
-                            <span className="font-black text-base text-gray-900">Sort By</span>
+                            <span className="font-black text-base text-gray-900 relative">
+                                Sort By
+                                <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-[#FF5200]/40 rounded-full"></span>
+                            </span>
                             <ChevronDown className={cn("h-5 w-5 text-gray-600 transition-transform duration-300", expandedSections.sortBy && "rotate-180")} />
                         </button>
                         {expandedSections.sortBy && (
@@ -297,7 +303,10 @@ export function FilterSidebar({
                     {/* Category Section */}
                     <div>
                         <div className="flex items-center justify-between w-full py-2">
-                            <span className="font-black text-base text-gray-900">Category</span>
+                            <span className="font-black text-base text-gray-900 relative">
+                                Category
+                                <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-[#FF5200]/40 rounded-full"></span>
+                            </span>
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => setGridView(prev => !prev)}
@@ -375,7 +384,10 @@ export function FilterSidebar({
                             onClick={() => toggleSection('location')}
                             className="flex items-center justify-between w-full py-2 group"
                         >
-                            <span className="font-black text-base text-gray-900">Location</span>
+                            <span className="font-black text-base text-gray-900 relative">
+                                Location
+                                <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-[#FF5200]/40 rounded-full"></span>
+                            </span>
                             <ChevronDown className={cn("h-5 w-5 text-gray-600 transition-transform duration-300", expandedSections.location && "rotate-180")} />
                         </button>
                         {expandedSections.location && (
@@ -415,7 +427,10 @@ export function FilterSidebar({
                             onClick={() => toggleSection('distance' as any)}
                             className="flex items-center justify-between w-full py-2 group"
                         >
-                            <span className="font-black text-base text-gray-900">Distance</span>
+                            <span className="font-black text-base text-gray-900 relative">
+                                Distance
+                                <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-[#FF5200]/40 rounded-full"></span>
+                            </span>
                             <ChevronDown className={cn("h-5 w-5 text-gray-600 transition-transform duration-300", (expandedSections as any).distance && "rotate-180")} />
                         </button>
                         {(expandedSections as any).distance && (
@@ -463,7 +478,10 @@ export function FilterSidebar({
                             onClick={() => toggleSection('cost' as any)}
                             className="flex items-center justify-between w-full py-2 group"
                         >
-                            <span className="font-black text-base text-gray-900">Cost</span>
+                            <span className="font-black text-base text-gray-900 relative">
+                                Cost
+                                <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-[#FF5200]/40 rounded-full"></span>
+                            </span>
                             <ChevronDown className={cn("h-5 w-5 text-gray-600 transition-transform duration-300", (expandedSections as any).cost && "rotate-180")} />
                         </button>
                         {(expandedSections as any).cost && (
@@ -512,7 +530,10 @@ export function FilterSidebar({
                             onClick={() => toggleSection('rating')}
                             className="flex items-center justify-between w-full py-2 group"
                         >
-                            <span className="font-black text-base text-gray-900">Rating</span>
+                            <span className="font-black text-base text-gray-900 relative">
+                                Rating
+                                <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-[#FF5200]/40 rounded-full"></span>
+                            </span>
                             <ChevronDown className={cn("h-5 w-5 text-gray-600 transition-transform duration-300", expandedSections.rating && "rotate-180")} />
                         </button>
                         {expandedSections.rating && (
@@ -547,7 +568,10 @@ export function FilterSidebar({
                             onClick={() => toggleSection('filters')}
                             className="flex items-center justify-between w-full py-2 group"
                         >
-                            <span className="font-black text-base text-gray-900">More Filters</span>
+                            <span className="font-black text-base text-gray-900 relative">
+                                More Filters
+                                <span className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-[#FF5200]/40 rounded-full"></span>
+                            </span>
                             <ChevronDown className={cn("h-5 w-5 text-gray-600 transition-transform duration-300", expandedSections.filters && "rotate-180")} />
                         </button>
                         {expandedSections.filters && (
