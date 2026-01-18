@@ -20,11 +20,12 @@ export default async function AddBusinessPage() {
                 <ParticleBackground />
             </div>
 
-            <div className="relative z-10">
+            {/* Header - Fixed at top with highest z-index */}
+            <div className="relative z-50">
                 <Header />
             </div>
 
-            <main className="flex-1 container mx-auto px-4 pt-32 pb-8 md:pt-36 md:pb-16 max-w-5xl relative z-10">
+            <main className="flex-1 container mx-auto px-4 pt-40 pb-8 md:pt-44 md:pb-16 max-w-5xl relative z-10">
                 <div className="text-center mb-12 space-y-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
                     <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-100 text-orange-700 font-bold text-sm border border-orange-200">
                         <Briefcase className="w-4 h-4" />
