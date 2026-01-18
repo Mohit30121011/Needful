@@ -67,33 +67,34 @@
     border-color: var(--border);
   }
 
+  /* Global Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 10px;
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 82, 0, 0.5);
+    /* Semi-transparent Orange */
+    border-radius: 20px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #FF5200;
+    /* Solid Orange */
+  }
+
+  /* Firefox Fallback */
   html {
     scroll-behavior: smooth;
     scrollbar-width: thin;
-    /* Firefox */
-    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-    /* Firefox */
-  }
-
-  /* Webkit / Chrome / Safari Scrollbar */
-  html::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-    background-color: transparent;
-  }
-
-  html::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-
-  html::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-  }
-
-  html::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 82, 0, 0.8);
-    /* NeedFul Orange on hover */
+    scrollbar-color: rgba(255, 82, 0, 0.5) transparent;
   }
 
   body {
