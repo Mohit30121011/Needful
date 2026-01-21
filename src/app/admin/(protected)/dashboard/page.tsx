@@ -101,11 +101,10 @@ export default async function DashboardPage() {
 
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1 h-6 bg-gradient-to-b from-[#FF5200] to-orange-600 rounded-full"></div>
+                    <div className="relative inline-block pb-2">
                         <h2 className="text-xl font-bold tracking-tight text-gray-900">Recent Businesses</h2>
+                        <span className="absolute bottom-0 left-0 w-1/3 h-1 bg-[#FF5200] rounded-full"></span>
                     </div>
-                    <button className="text-sm text-[#FF5200] hover:text-orange-600 font-medium hover:underline transition-colors">View All</button>
                 </div>
                 <BusinessTable businesses={businesses} />
             </div>

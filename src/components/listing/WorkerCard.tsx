@@ -17,6 +17,7 @@ interface WorkerCardProps {
         categories?: Category
         services?: Service[]
         provider_images?: { url: string; is_primary: boolean }[]
+        experience_years?: number
     }
     jobsDone?: number // New prop for job count
     onSave?: (providerId: string) => void
