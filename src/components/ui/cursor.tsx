@@ -39,33 +39,35 @@ export const CustomCursor = () => {
 
     return (
         <>
-            {/* Main Dot */}
+            {/* Main Dot - Orange */}
             <motion.div
-                className="fixed top-0 left-0 w-4 h-4 bg-[#FF5200] rounded-full pointer-events-none z-[9999] mix-blend-difference"
+                className="fixed top-0 left-0 w-3 h-3 bg-[#FF5200] rounded-full pointer-events-none z-[9999]"
                 animate={{
-                    x: mousePosition.x - 8,
-                    y: mousePosition.y - 8,
-                    scale: isHovering ? 2.5 : 1,
-                }}
-                transition={{
-                    type: "spring",
-                    stiffness: 500,
-                    damping: 28,
-                }}
-            />
-
-            {/* Trailing Ring */}
-            <motion.div
-                className="fixed top-0 left-0 w-8 h-8 border border-[#FF5200] rounded-full pointer-events-none z-[9998] opacity-50"
-                animate={{
-                    x: mousePosition.x - 16,
-                    y: mousePosition.y - 16,
+                    x: mousePosition.x - 6,
+                    y: mousePosition.y - 6,
                     scale: isHovering ? 1.5 : 1,
                 }}
                 transition={{
                     type: "spring",
-                    stiffness: 250,
-                    damping: 20,
+                    stiffness: 800,
+                    damping: 35,
+                }}
+            />
+
+            {/* Trailing Ring - White/Black Theme */}
+            <motion.div
+                className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9998] border-2 border-white bg-black/10 backdrop-blur-[1px] shadow-sm shadow-black/20"
+                animate={{
+                    x: mousePosition.x - 16,
+                    y: mousePosition.y - 16,
+                    scale: isHovering ? 2 : 1,
+                    opacity: isHovering ? 0.8 : 0.5,
+                    borderColor: isHovering ? "#FF5200" : "#ffffff", // Optional: Ring turns orange on hover
+                }}
+                transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 25,
                 }}
             />
         </>
