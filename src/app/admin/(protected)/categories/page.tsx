@@ -5,7 +5,9 @@ import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Plus, Edit2, Trash2, Search, Wrench, Car, Palette, Sparkles, Hammer, Calculator, Shirt, HardHat, Stethoscope, GraduationCap, Zap, Music, Gift, Scissors, UtensilsCrossed, Home, Briefcase, Camera, Heart, ShoppingBag, Plane, Dumbbell, Tv, Book, Coffee, Pizza, Flower2, Dog, Baby, Bike, Bus, Building, Landmark, Trees, Waves } from 'lucide-react'
+import { Label } from '@/components/ui/label'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog'
+import { Plus, Edit2, Trash2, Search, Wrench, Car, Palette, Sparkles, Hammer, Calculator, Shirt, HardHat, Stethoscope, GraduationCap, Zap, Music, Gift, Scissors, UtensilsCrossed, Home, Briefcase, Camera, Heart, ShoppingBag, Plane, Dumbbell, Tv, Book, Coffee, Pizza, Flower2, Dog, Baby, Bike, Bus, Building, Landmark, Trees, Waves, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { AdminPageTransition } from '@/components/admin/AdminPageTransition'
 
@@ -61,6 +63,12 @@ export default function CategoriesPage() {
     const [categories, setCategories] = useState<Category[]>([])
     const [loading, setLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState('')
+    const [editingCategory, setEditingCategory] = useState<Category | null>(null)
+    const [isEditOpen, setIsEditOpen] = useState(false)
+    const [isAddOpen, setIsAddOpen] = useState(false)
+    const [isDeleting, setIsDeleting] = useState<string | null>(null)
+    const [isSaving, setIsSaving] = useState(false)
+    const [formData, setFormData] = useState({ name: '', slug: '', icon: '', description: '' })
     const supabase = createClient()
 
     useEffect(() => {
@@ -91,6 +99,92 @@ export default function CategoriesPage() {
         return <IconComponent className="w-6 h-6 text-[#FF5200]" />
     }
 
+    const handleEdit = (category: Category) => {
+        setEditingCategory(category)
+        setFormData({
+            name: category.name,
+            slug: category.slug,
+            icon: category.icon || '',
+            description: category.description || ''
+        })
+        setIsEditOpen(true)
+    }
+
+    const handleSaveEdit = async () => {
+        if (!editingCategory) return
+        setIsSaving(true)
+
+        const { error } = await (supabase as any)
+            .from('categories')
+            .update({
+                name: formData.name,
+                slug: formData.slug,
+                icon: formData.icon,
+                description: formData.description
+            })
+            .eq('id', editingCategory.id)
+
+        if (error) {
+            toast.error('Failed to update category')
+        } else {
+            toast.success('Category updated successfully!')
+            setIsEditOpen(false)
+            setEditingCategory(null)
+            fetchCategories()
+        }
+        setIsSaving(false)
+    }
+
+    const handleAdd = async () => {
+        if (!formData.name || !formData.slug) {
+            toast.error('Name and slug are required')
+            return
+        }
+        setIsSaving(true)
+
+        const { error } = await (supabase as any)
+            .from('categories')
+            .insert({
+                name: formData.name,
+                slug: formData.slug,
+                icon: formData.icon || 'Wrench',
+                description: formData.description
+            })
+
+        if (error) {
+            toast.error('Failed to add category')
+        } else {
+            toast.success('Category added successfully!')
+            setIsAddOpen(false)
+            setFormData({ name: '', slug: '', icon: '', description: '' })
+            fetchCategories()
+        }
+        setIsSaving(false)
+    }
+
+    const handleDelete = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this category?')) return
+        setIsDeleting(id)
+
+        const { error } = await (supabase as any)
+            .from('categories')
+            .delete()
+            .eq('id', id)
+
+        if (error) {
+            toast.error('Failed to delete category')
+        } else {
+            toast.success('Category deleted successfully!')
+            fetchCategories()
+        }
+        setIsDeleting(null)
+    }
+
+    const openAddModal = () => {
+        setFormData({ name: '', slug: '', icon: '', description: '' })
+        setIsAddOpen(true)
+    }
+
     return (
         <AdminPageTransition>
             <div className="space-y-6">
@@ -109,7 +203,7 @@ export default function CategoriesPage() {
                                 className="pl-9 border-gray-200 focus:border-[#FF5200] focus:ring-[#FF5200]/30 rounded-xl bg-white"
                             />
                         </div>
-                        <Button className="bg-[#FF5200] hover:bg-[#E04800] text-white rounded-xl shadow-lg shadow-orange-500/20">
+                        <Button onClick={openAddModal} className="bg-[#FF5200] hover:bg-[#E04800] text-white rounded-xl shadow-lg shadow-orange-500/20">
                             <Plus className="w-4 h-4 mr-2" />
                             Add Category
                         </Button>
@@ -137,12 +231,27 @@ export default function CategoriesPage() {
                                         </div>
                                     </div>
                                     <div className="flex gap-1 mt-4 pt-3 border-t border-gray-100">
-                                        <Button variant="ghost" size="sm" className="flex-1 h-9 text-gray-500 hover:text-[#FF5200] hover:bg-orange-50 rounded-lg text-xs font-medium">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => handleEdit(category)}
+                                            className="flex-1 h-9 text-gray-500 hover:text-[#FF5200] hover:bg-orange-50 rounded-lg text-xs font-medium"
+                                        >
                                             <Edit2 className="h-3.5 w-3.5 mr-1.5" />
                                             Edit
                                         </Button>
-                                        <Button variant="ghost" size="sm" className="flex-1 h-9 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg text-xs font-medium">
-                                            <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => handleDelete(category.id)}
+                                            disabled={isDeleting === category.id}
+                                            className="flex-1 h-9 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg text-xs font-medium"
+                                        >
+                                            {isDeleting === category.id ? (
+                                                <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                                            ) : (
+                                                <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                                            )}
                                             Delete
                                         </Button>
                                     </div>
@@ -155,6 +264,118 @@ export default function CategoriesPage() {
                 <div className="text-center text-sm text-gray-500">
                     {filteredCategories.length} categories total
                 </div>
+
+                {/* Edit Modal */}
+                <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                    <DialogContent className="sm:max-w-[425px] bg-white rounded-2xl">
+                        <DialogHeader>
+                            <DialogTitle className="text-xl font-bold text-gray-900">Edit Category</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="name">Name</Label>
+                                <Input
+                                    id="name"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    className="rounded-xl"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="slug">Slug</Label>
+                                <Input
+                                    id="slug"
+                                    value={formData.slug}
+                                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                                    className="rounded-xl"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="icon">Icon Name</Label>
+                                <Input
+                                    id="icon"
+                                    value={formData.icon}
+                                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                                    placeholder="e.g., Wrench, Car, Home"
+                                    className="rounded-xl"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="description">Description</Label>
+                                <Input
+                                    id="description"
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                    className="rounded-xl"
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setIsEditOpen(false)} className="rounded-xl">Cancel</Button>
+                            <Button onClick={handleSaveEdit} disabled={isSaving} className="bg-[#FF5200] hover:bg-[#E04800] text-white rounded-xl">
+                                {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                                Save Changes
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
+                {/* Add Modal */}
+                <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+                    <DialogContent className="sm:max-w-[425px] bg-white rounded-2xl">
+                        <DialogHeader>
+                            <DialogTitle className="text-xl font-bold text-gray-900">Add New Category</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="add-name">Name *</Label>
+                                <Input
+                                    id="add-name"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    placeholder="e.g., Plumbing"
+                                    className="rounded-xl"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="add-slug">Slug *</Label>
+                                <Input
+                                    id="add-slug"
+                                    value={formData.slug}
+                                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                                    placeholder="e.g., plumbing"
+                                    className="rounded-xl"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="add-icon">Icon Name</Label>
+                                <Input
+                                    id="add-icon"
+                                    value={formData.icon}
+                                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                                    placeholder="e.g., Wrench"
+                                    className="rounded-xl"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="add-description">Description</Label>
+                                <Input
+                                    id="add-description"
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                    className="rounded-xl"
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setIsAddOpen(false)} className="rounded-xl">Cancel</Button>
+                            <Button onClick={handleAdd} disabled={isSaving} className="bg-[#FF5200] hover:bg-[#E04800] text-white rounded-xl">
+                                {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                                Add Category
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </AdminPageTransition>
     )
