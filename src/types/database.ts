@@ -254,6 +254,41 @@ export type Database = {
                     created_at?: string
                 }
             }
+            enquiries: {
+                Row: {
+                    id: string
+                    provider_id: string
+                    customer_name: string
+                    customer_phone: string
+                    customer_email: string | null
+                    message: string
+                    status: string
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    provider_id: string
+                    customer_name: string
+                    customer_phone: string
+                    customer_email?: string | null
+                    message: string
+                    status?: string
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    provider_id?: string
+                    customer_name?: string
+                    customer_phone?: string
+                    customer_email?: string | null
+                    message?: string
+                    status?: string
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
         }
         Views: {
             [_ in never]: never
@@ -279,6 +314,7 @@ export type Service = Tables<'services'>
 export type ProviderImage = Tables<'provider_images'>
 export type Review = Tables<'reviews'>
 export type Favorite = Tables<'favorites'>
+export type Enquiry = Tables<'enquiries'>
 
 // Extended types with relations
 export type ProviderWithCategory = Provider & {
