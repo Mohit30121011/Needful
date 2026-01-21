@@ -33,7 +33,7 @@ export default async function AnalyticsPage({ params }: { params: { id: string }
 
     // 2. Fetch Analytics Data
     // We'll try to fetch, but handle if table doesn't exist yet
-    let events = []
+    let events: any[] = []
     try {
         const { data, error } = await supabase
             .from('analytics_events')
