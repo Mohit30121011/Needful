@@ -51,9 +51,10 @@ export function AdminSidebar() {
                         <img
                             src="/brand-logo.png"
                             alt="NeedFul"
-                            className="h-6 w-auto object-contain"
+                            className="h-10 w-auto object-contain"
                         />
                     </div>
+                    <span className="text-xl font-bold text-white tracking-tight hidden md:block">NeedFul</span>
                 </Link>
             </div>
 

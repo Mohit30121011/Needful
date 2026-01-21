@@ -15,9 +15,6 @@ export async function createBusiness(prevState: any, formData: any) {
     }
 
     // 2. Parse & Validate Data
-    // Note: formData here might be a plain object if passed from client component via JS, 
-    // or FormData if using native action. 
-    // We'll assume the client component sends a structured JSON object for this complex wizard.
     const rawData = formData;
 
     const validation = createBusinessSchema.safeParse(rawData);
@@ -38,7 +35,6 @@ export async function createBusiness(prevState: any, formData: any) {
     } = validation.data;
 
     // 3. Generate Slug
-    // Simple slugify: name + random string to ensure uniqueness
     const slug = business_name
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
@@ -46,7 +42,6 @@ export async function createBusiness(prevState: any, formData: any) {
         + '-' + Math.random().toString(36).substring(2, 7);
 
     // 4. Insert into Provider
-    // Note: Using 'as any' to bypass strict Supabase typing since types may not be generated
     const { data: provider, error: insertError } = await supabase
         .from('providers')
         .insert({
@@ -79,7 +74,7 @@ export async function createBusiness(prevState: any, formData: any) {
 
     // 5. Insert Images (if any)
     if (images && images.length > 0) {
-        const imageInserts = images.map((url, index) => ({
+        const imageInserts = images.map((url: string, index: number) => ({
             provider_id: providerData.id,
             url: url,
             is_primary: index === 0,
@@ -92,11 +87,47 @@ export async function createBusiness(prevState: any, formData: any) {
 
         if (imgError) {
             console.error("Image Insert Error:", imgError);
-            // We don't fail the whole request, just log it. Business is created.
         }
     }
 
     revalidatePath('/search');
-    // We can return the slug to redirect client-side
     return { success: true, slug: providerData.slug };
+}
+
+export async function deleteBusiness(businessId: string) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        return { error: "Unauthorized" };
+    }
+
+    const { data: provider, error } = await supabase
+        .from('providers')
+        .select('user_id')
+        .eq('id', businessId)
+        .single();
+
+    if (error || !provider) {
+        return { error: "Business not found" };
+    }
+
+    // TYPE FIX: Explicitly cast provider to handle 'never' inference
+    const record = provider as { user_id: string };
+
+    if (record.user_id !== user.id) {
+        return { error: "You do not have permission to delete this business" };
+    }
+
+    const { error: deleteError } = await supabase
+        .from('providers')
+        .delete()
+        .eq('id', businessId);
+
+    if (deleteError) {
+        return { error: "Failed to delete business" };
+    }
+
+    revalidatePath('/admin/dashboard');
+    return { success: true };
 }

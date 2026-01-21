@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useSearchParams } from 'next/navigation'
 import {
     Table,
     TableBody,
@@ -13,20 +14,31 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Search, Loader2, Trash2, Shield, UserX, UserCheck, Mail, MapPin } from 'lucide-react'
+import { Search, Loader2, Trash2, Shield, Mail, MapPin } from 'lucide-react'
 import { toast } from 'sonner'
 import { User } from '@/types/database'
 import { AdminPageTransition } from '@/components/admin/AdminPageTransition'
 
-export default function UsersPage() {
+// Main content component that uses useSearchParams
+function UsersContent() {
+    const searchParams = useSearchParams()
+    const initialQuery = searchParams.get('q') || ''
+
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(true)
-    const [searchQuery, setSearchQuery] = useState('')
+    const [searchQuery, setSearchQuery] = useState(initialQuery)
     const supabase = createClient()
 
     useEffect(() => {
         fetchUsers()
     }, [])
+
+    useEffect(() => {
+        const query = searchParams.get('q')
+        if (query !== null) {
+            setSearchQuery(query)
+        }
+    }, [searchParams])
 
     const fetchUsers = async () => {
         setLoading(true)
@@ -52,7 +64,6 @@ export default function UsersPage() {
         <AdminPageTransition>
             <div className="space-y-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    {/* ... header ... */}
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight text-gray-900">Users</h1>
                         <p className="text-muted-foreground mt-1">Manage your platform users and their roles.</p>
@@ -159,5 +170,18 @@ export default function UsersPage() {
                 </div>
             </div>
         </AdminPageTransition>
+    )
+}
+
+// Wrapper component with Suspense boundary
+export default function UsersPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin text-[#FF5200]" />
+            </div>
+        }>
+            <UsersContent />
+        </Suspense>
     )
 }
