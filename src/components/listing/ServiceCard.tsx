@@ -241,6 +241,7 @@ export function ServiceCard({ provider, onSave, isSaved = false, isOwner = false
                                     className="flex-1 bg-[#FF5200] hover:bg-[#E04800] text-white font-bold h-9 text-xs sm:text-sm px-4 rounded-lg shadow-sm whitespace-nowrap transition-transform active:scale-[0.98]"
                                     onClick={(e) => {
                                         e.preventDefault()
+                                        e.stopPropagation()
                                         router.push(`/business/edit/${provider.id}`)
                                     }}
                                 >
@@ -253,6 +254,7 @@ export function ServiceCard({ provider, onSave, isSaved = false, isOwner = false
                                     className="flex-1 border-gray-200 text-gray-700 bg-white hover:bg-gray-50 font-semibold h-9 text-xs sm:text-sm px-3 rounded-lg flex items-center justify-center gap-2 whitespace-nowrap transition-all active:scale-[0.98]"
                                     onClick={(e) => {
                                         e.preventDefault()
+                                        e.stopPropagation()
                                         router.push(`/business/analytics/${provider.id}`)
                                     }}
                                 >
