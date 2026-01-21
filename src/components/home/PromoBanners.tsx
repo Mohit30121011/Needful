@@ -39,14 +39,14 @@ const banners: Banner[] = [
         gradient: "from-blue-600/90 via-blue-600/60 to-transparent",
         image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=600",
         cta: "Find Experts",
-        link: "/search?category=repairs",
+        link: "/search?category=contractors",
         icon: Hammer
     },
     {
         title: "Home Cleaning",
         subtitle: "Deep Cleaning & Disinfection Services",
         gradient: "from-teal-600/90 via-teal-600/60 to-transparent",
-        image: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&q=80&w=600",
+        image: "/assets/home-cleaning.png",
         cta: "Book Now",
         link: "/search?category=cleaning",
         icon: Sparkles

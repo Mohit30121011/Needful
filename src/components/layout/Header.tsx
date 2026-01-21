@@ -379,14 +379,14 @@ export function Header({ user }: HeaderProps) {
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: 0.4, duration: 0.3 }}
                                         >
-                                            <Link href="/business/add" onClick={() => setMobileMenuOpen(false)}>
-                                                <Button variant="outline" className="w-full justify-start gap-3 h-14 text-gray-800 font-bold border-gray-200 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 shadow-sm rounded-xl">
+                                            <Button asChild variant="outline" className="w-full justify-start gap-3 h-14 text-gray-800 font-bold border-gray-200 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 shadow-sm rounded-xl">
+                                                <Link href="/business/add" onClick={() => setMobileMenuOpen(false)}>
                                                     <div className="bg-orange-100 p-1.5 rounded-full text-[#FF5200]">
                                                         <Plus className="h-4 w-4" strokeWidth={3} />
                                                     </div>
                                                     Add Business
-                                                </Button>
-                                            </Link>
+                                                </Link>
+                                            </Button>
                                         </motion.div>
 
                                         {!currentUser && (
@@ -395,11 +395,11 @@ export function Header({ user }: HeaderProps) {
                                                 animate={{ opacity: 1, y: 0 }}
                                                 transition={{ delay: 0.5, duration: 0.3 }}
                                             >
-                                                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                                                    <Button className="w-full h-14 bg-[#FF5200] hover:bg-[#E04800] text-white font-bold text-lg shadow-xl shadow-orange-500/20 rounded-xl">
+                                                <Button asChild className="w-full h-14 bg-[#FF5200] hover:bg-[#E04800] text-white font-bold text-lg shadow-xl shadow-orange-500/20 rounded-xl">
+                                                    <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
                                                         Login / Sign up
-                                                    </Button>
-                                                </Link>
+                                                    </Link>
+                                                </Button>
                                             </motion.div>
                                         )}
                                     </div>

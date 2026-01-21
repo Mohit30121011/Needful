@@ -243,7 +243,7 @@ export function AIChatbox() {
                                     )}
                                     <div
                                         className={cn(
-                                            "max-w-[85%] rounded-2xl px-5 py-3.5 text-[15px] leading-relaxed shadow-sm",
+                                            "max-w-[85%] rounded-2xl px-4 py-3 text-[15px] leading-relaxed shadow-sm",
                                             message.role === 'user'
                                                 ? 'bg-gray-900 text-white rounded-br-none'
                                                 : 'bg-white text-gray-800 border border-gray-100 rounded-bl-none shadow-sm'

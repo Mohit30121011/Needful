@@ -41,14 +41,7 @@ export async function POST(request: Request) {
             content: m.content
         }))
 
-        if (!GROQ_API_KEY) {
-            return NextResponse.json({
-                response: 'Aap search page pe jaake providers dekh sakte ho! 🔍'
-            })
-        }
-
         const supabase = await createClient()
-
         const lowerMessage = message.toLowerCase()
 
         // Enhanced keyword mapping
@@ -89,7 +82,7 @@ export async function POST(request: Request) {
 
         const isAskingForClosest = lowerMessage.includes('closest') || lowerMessage.includes('near') || lowerMessage.includes('distance')
 
-        // Query providers with RICH details
+        // 1. Search for providers in DB (regardless of API Key)
         let providers: any[] = []
         try {
             let query = supabase
@@ -107,10 +100,16 @@ export async function POST(request: Request) {
                     longitude,
                     operating_hours,
                     categories!inner(name, slug),
-                    services(title, price, price_unit)
+                    services(title, price, price_unit),
+                    status
                 `)
 
-            // If checking closest, we grab more candidates to sort in JS (since we lack PostGIS for now)
+            // Filter for Approved businesses ONLY
+            // We use .or to handle cases where status might be missing or explicitly approved
+            // But since we want strict approval flow now:
+            query = query.eq('status', 'approved')
+
+            // If checking closest, we grab more candidates to sort in JS
             if (isAskingForClosest && userLocation) {
                 query = query.limit(20)
             } else {
@@ -127,7 +126,9 @@ export async function POST(request: Request) {
 
             const { data, error } = await query
 
-            if (!error && data) {
+            if (error) {
+                console.error('Supabase error:', error)
+            } else if (data) {
                 providers = data
             }
         } catch (dbError) {
@@ -174,9 +175,6 @@ ${i + 1}. **${p.business_name}**${distInfo}
                 context += '\n\n[System Note: User asked for "closest" providers, but their Location was NOT provided. Displaying Top Rated instead. Please politely inform the user to enable location for distance features.]'
             }
         } else {
-            // If no new providers found, check if we have history.
-            // If yes, the user probably asked a follow-up question ("Where is it?", "Contact number?").
-            // We instruct the LLM to use the history.
             if (messageHistory.length > 0) {
                 context = '\n\n[System Note: No NEW providers found for this specific query. The user might be asking a follow-up question about the providers mentioned in the Conversation History. Please answer based on the history if applicable.]'
             } else if (message.length > 3) {
@@ -184,7 +182,30 @@ ${i + 1}. **${p.business_name}**${distInfo}
             }
         }
 
-        // Call Groq API
+        // 2. CHECK API KEY - MOCK MODE FALLBACK
+        if (!GROQ_API_KEY) {
+            // Mock Mode: Construct a basic helpful response using the provider data directly
+            if (providers.length > 0) {
+                let mockResponse = `Mujhe details mil gayi hain! Ye rahe kuch best options:\n\n`
+                providers.slice(0, 3).forEach((p, i) => {
+                    const stars = '⭐'.repeat(Math.round(p.rating))
+                    mockResponse += `**${i + 1}. ${p.business_name}**\n`
+                    mockResponse += `   ${stars} (${p.rating})\n`
+                    mockResponse += `   📍 ${p.area || p.city}\n`
+                    if (p.phone) mockResponse += `   📞 ${p.phone}\n`
+                    mockResponse += `\n`
+                })
+                mockResponse += `Kya aap kisi ko call karna chahenge?`
+
+                return NextResponse.json({ response: mockResponse })
+            } else {
+                return NextResponse.json({
+                    response: "Maaf kijiye, mujhe koi services nahi mili. Aap 'Search' page par try kar sakte hain ya kuch aur search karein! 🔍"
+                })
+            }
+        }
+
+        // 3. Call Groq API (Only if Key exists)
         const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -204,11 +225,11 @@ ${i + 1}. **${p.business_name}**${distInfo}
         })
 
         if (!groqResponse.ok) {
-            // Fallback if API fails
+            // Fallback if API fails but we have data
             if (providers.length > 0) {
-                let response = `Mujhe Groq se connect karne mein dikkat ho rahi hai, lekin database mein ye options mile:\n`
+                let response = `Groq server busy hai, lekin ye options mile hain:\n\n`
                 providers.slice(0, 3).forEach((p, i) => {
-                    response += `${i + 1}. ${p.business_name} ⭐${p.rating}\n`
+                    response += `**${p.business_name}** (${p.rating}⭐)\n📍 ${p.city}\n\n`
                 })
                 return NextResponse.json({ response })
             }

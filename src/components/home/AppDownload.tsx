@@ -1,6 +1,7 @@
 'use client'
 
 import { Star, MapPin, Search, Zap, Droplets, Sparkles, Home, Play, Apple } from 'lucide-react';
+import Image from 'next/image';
 
 export function AppDownload() {
     return (
@@ -27,19 +28,23 @@ export function AppDownload() {
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                                <button className="flex items-center gap-3 bg-white text-gray-900 px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition-all active:scale-95 w-full sm:w-auto justify-center">
-                                    <span className="w-6 h-6"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.5 1.3 0 2.18.88 2.86.88.7 0 1.83-.91 3.08-.91 1.28 0 2.43.51 3.11 1.08-2.64 1.6-4.5 5.6-2.6 8.56zm-4.33-15.5c.78-1 1.5-2.02 1.36-3.13-1.16.03-2.64.67-3.4 1.54-.7.78-1.28 2.05-1.12 3.07 1.3.1 2.63-.76 3.16-1.48z" /></svg></span>
-                                    <div className="text-left">
-                                        <div className="text-[10px] font-medium opacity-60">Download on the</div>
-                                        <div className="text-sm leading-none">App Store</div>
-                                    </div>
+                                <button className="hover:opacity-80 transition-opacity active:scale-95">
+                                    <Image
+                                        src="/assets/app-store-badge.png"
+                                        alt="Download on the App Store"
+                                        width={140}
+                                        height={42}
+                                        className="h-[42px] w-auto"
+                                    />
                                 </button>
-                                <button className="flex items-center gap-3 bg-white/10 text-white border border-white/20 px-6 py-3 rounded-xl font-bold hover:bg-white/20 transition-all active:scale-95 w-full sm:w-auto justify-center">
-                                    <span className="w-6 h-6"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3,20.5V3.5C3,2.91,3.34,2.39,3.84,2.15L13.69,12L3.84,21.85C3.34,21.6,3,21.09,3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.3,13.08L18.33,16.64L15.39,13.7L20.3,13.08M18.33,7.36L20.3,10.92L15.39,10.3L18.33,7.36M16.81,8.88L14.54,11.15L6.05,2.66L16.81,8.88M13.69,12L3.84,2.15C3.34,1.91,3,1.4,3,0.81V0.5H21V23.5H3V20.5C3,19.91,3.34,19.39,3.84,19.15L13.69,12Z" /></svg></span>
-                                    <div className="text-left">
-                                        <div className="text-[10px] font-medium opacity-60">GET IT ON</div>
-                                        <div className="text-sm leading-none">Google Play</div>
-                                    </div>
+                                <button className="hover:opacity-80 transition-opacity active:scale-95">
+                                    <Image
+                                        src="/assets/google-play-badge.png"
+                                        alt="Get it on Google Play"
+                                        width={140}
+                                        height={42}
+                                        className="h-[42px] w-auto"
+                                    />
                                 </button>
                             </div>
 

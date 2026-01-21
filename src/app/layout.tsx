@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
-import { AIChatbox } from '@/components/chat/AIChatbox'
 import { AnimatedBackground } from '@/components/layout/AnimatedBackground'
 import { ClientBootAnimation } from '@/components/layout/ClientBootAnimation'
+import { ChatboxWrapper } from '@/components/chat/ChatboxWrapper'
 
 
 export const metadata: Metadata = {
@@ -47,9 +47,13 @@ export default function RootLayout({
         <AnimatedBackground />
 
         {children}
-        <AIChatbox />
+
+        {/* AI Chatbox - hidden on login/signup pages */}
+        <ChatboxWrapper />
+
         <Toaster position="top-right" />
       </body>
     </html>
   )
 }
+
