@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'next'
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
