@@ -147,35 +147,35 @@ export async function POST(request: Request) {
         ])
 
         // Fetch recent businesses
-        const { data: recentBusinesses } = await supabase
+        const { data: recentBusinesses } = await (supabase as any)
             .from('providers')
             .select('business_name, city, rating, status, created_at')
             .order('created_at', { ascending: false })
-            .limit(5)
+            .limit(5) as { data: Array<{ business_name: string; city: string; rating: number; status: string; created_at: string }> | null }
 
         // Fetch top rated providers
-        const { data: topRated } = await supabase
+        const { data: topRated } = await (supabase as any)
             .from('providers')
             .select('business_name, rating, review_count, city')
             .eq('status', 'approved')
             .order('rating', { ascending: false })
-            .limit(5)
+            .limit(5) as { data: Array<{ business_name: string; rating: number; review_count: number; city: string }> | null }
 
         // Fetch low rated providers (needs attention)
-        const { data: lowRated } = await supabase
+        const { data: lowRated } = await (supabase as any)
             .from('providers')
             .select('business_name, rating, review_count, city')
             .eq('status', 'approved')
             .lt('rating', 3)
             .order('rating', { ascending: true })
-            .limit(5)
+            .limit(5) as { data: Array<{ business_name: string; rating: number; review_count: number; city: string }> | null }
 
         // Fetch recent reviews
-        const { data: recentReviews } = await supabase
+        const { data: recentReviews } = await (supabase as any)
             .from('reviews')
             .select('rating, comment, created_at')
             .order('created_at', { ascending: false })
-            .limit(5)
+            .limit(5) as { data: Array<{ rating: number; comment: string; created_at: string }> | null }
 
         // Fetch city distribution
         const { data: cityData } = await supabase
