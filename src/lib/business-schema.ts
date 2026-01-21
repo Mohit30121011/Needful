@@ -15,7 +15,7 @@ export const businessBaseSchema = z.object({
     website: z.string().url().optional().or(z.literal('')),
 
     // Meta
-    category_id: z.string().uuid("Invalid Category"),
+    category_id: z.string(), // Relaxed from uuid to string to allow legacy/seeded IDs
     category_slug: z.string(), // Helper for frontend logic
 });
 
