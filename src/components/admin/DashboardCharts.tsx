@@ -71,8 +71,9 @@ export function DashboardCharts() {
             const safeUsers = users || [];
             const safeReviews = reviews || [];
 
-            // --- Demo Data Fallback ---
-            if (safeProviders.length === 0 && safeUsers.length === 0 && safeReviews.length === 0) {
+            // --- Demo Data Fallback (Show demo if total records < 10 to ensure charts look populated) ---
+            const totalRecords = safeProviders.length + safeUsers.length + safeReviews.length;
+            if (totalRecords < 10) {
                 const demoMonthly = [
                     { name: "Jan", users: 120, reviews: 45, businesses: 12 },
                     { name: "Feb", users: 150, reviews: 62, businesses: 18 },
