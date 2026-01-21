@@ -1,83 +1,41 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useEffect } from "react";
 
 export const CustomCursor = () => {
-    const [isHovering, setIsHovering] = useState(false);
-    const cursorX = useMotionValue(-100);
-    const cursorY = useMotionValue(-100);
-
-    // Smoother spring for a refined feel
-    const springConfig = { damping: 25, stiffness: 200 };
-    const cursorXSpring = useSpring(cursorX, springConfig);
-    const cursorYSpring = useSpring(cursorY, springConfig);
-
     useEffect(() => {
-        const moveCursor = (e: MouseEvent) => {
-            cursorX.set(e.clientX);
-            cursorY.set(e.clientY);
-        };
+        // Create an orange cursor SVG (default arrow shape)
+        const cursorSvg = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="%23FF5200" stroke="%23000" stroke-width="1" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87c.48 0 .72-.58.38-.92L6.35 2.79a.5.5 0 0 0-.85.42Z"/>
+            </svg>
+        `;
 
-        const handleMouseOver = (e: MouseEvent) => {
-            const target = e.target as HTMLElement;
-            const isClickable =
-                target.tagName === "A" ||
-                target.tagName === "BUTTON" ||
-                target.closest("a") ||
-                target.closest("button") ||
-                target.getAttribute("role") === "button" ||
-                target.tagName === "INPUT" ||
-                target.tagName === "TEXTAREA" ||
-                target.tagName === "SELECT" ||
-                target.classList.contains("cursor-pointer");
+        // Convert to base64 for CSS
+        const cursorUrl = `data:image/svg+xml,${cursorSvg.replace(/\n/g, '').replace(/\s+/g, ' ').trim()}`;
 
-            setIsHovering(!!isClickable);
-        };
+        // Apply custom cursor to body
+        document.body.style.cursor = `url("${cursorUrl}") 5 3, auto`;
 
-        window.addEventListener("mousemove", moveCursor);
-        window.addEventListener("mouseover", handleMouseOver);
+        // Apply to all elements
+        const style = document.createElement('style');
+        style.id = 'custom-cursor-style';
+        style.textContent = `
+            *, *::before, *::after {
+                cursor: url("${cursorUrl}") 5 3, auto !important;
+            }
+            a, button, [role="button"], input[type="submit"], input[type="button"], .cursor-pointer {
+                cursor: url("${cursorUrl}") 5 3, pointer !important;
+            }
+        `;
+        document.head.appendChild(style);
 
         return () => {
-            window.removeEventListener("mousemove", moveCursor);
-            window.removeEventListener("mouseover", handleMouseOver);
+            document.body.style.cursor = '';
+            const existingStyle = document.getElementById('custom-cursor-style');
+            if (existingStyle) existingStyle.remove();
         };
-    }, [cursorX, cursorY]);
+    }, []);
 
-    return (
-        <>
-            {/* Orange Pointer Dot - Clean and Visible */}
-            <motion.div
-                className="fixed top-0 left-0 w-3 h-3 rounded-full pointer-events-none z-[2147483647]"
-                style={{
-                    translateX: cursorX,
-                    translateY: cursorY,
-                    x: -6,
-                    y: -6,
-                    backgroundColor: "#FF5200",
-                    boxShadow: "0 0 8px rgba(255, 82, 0, 0.4)",
-                }}
-            />
-
-            {/* Trailing Ring */}
-            <motion.div
-                className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[2147483646] border-2"
-                style={{
-                    translateX: cursorXSpring,
-                    translateY: cursorYSpring,
-                    x: -16,
-                    y: -16,
-                    borderColor: "#FF5200",
-                }}
-                animate={{
-                    scale: isHovering ? 1.8 : 1,
-                    opacity: isHovering ? 0.6 : 0.4,
-                }}
-                transition={{
-                    scale: { type: "spring", stiffness: 300, damping: 25 },
-                    opacity: { duration: 0.2 },
-                }}
-            />
-        </>
-    );
+    return null; // No visual element needed - using CSS cursor
 };
