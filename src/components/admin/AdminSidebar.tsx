@@ -18,11 +18,11 @@ const sidebarItems = [
         href: "/admin/dashboard",
         icon: LayoutDashboard,
     },
-    // {
-    //     title: "Businesses",
-    //     href: "/admin/dashboard",
-    //     icon: Store,
-    // },
+    {
+        title: "Businesses",
+        href: "/admin/businesses",
+        icon: Store,
+    },
     {
         title: "Users",
         href: "/admin/users",
@@ -46,15 +46,14 @@ export function AdminSidebar() {
     return (
         <div className="h-screen w-64 bg-[#0F172A] border-r border-slate-800 flex flex-col fixed left-0 top-0 z-40">
             <div className="p-6 border-b border-slate-800/50">
-                <Link href="/" className="flex items-center gap-3 group">
-                    <div className="bg-white p-2 rounded-xl shadow-sm group-hover:scale-105 transition-transform">
+                <Link href="/" className="flex items-center group">
+                    <div className="bg-white p-3 rounded-xl shadow-sm group-hover:scale-105 transition-transform">
                         <img
                             src="/brand-logo.png"
                             alt="NeedFul"
-                            className="h-10 w-auto object-contain"
+                            className="h-12 w-auto object-contain"
                         />
                     </div>
-                    <span className="text-xl font-bold text-white tracking-tight hidden md:block">NeedFul</span>
                 </Link>
             </div>
 
