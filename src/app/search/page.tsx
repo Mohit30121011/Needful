@@ -194,6 +194,7 @@ function SearchPageContent() {
                     categories(*),
                     provider_images:provider_images(*)
                 `)
+                .eq('status', 'approved')
 
             // Filter by City
             if (selectedCity && selectedCity !== 'All Mumbai') {

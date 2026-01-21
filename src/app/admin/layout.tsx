@@ -29,8 +29,8 @@ export default async function AdminLayout({
     const profile = userProfile as { role: string } | null;
 
     if (!profile || profile.role !== 'admin') {
-        // Optionally redirect to a "unauthorized" page or just home
-        redirect('/');
+        // Redirect to admin login if not authorized
+        redirect('/admin/login');
     }
 
     return (

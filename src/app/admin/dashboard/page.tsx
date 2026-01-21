@@ -23,7 +23,7 @@ async function getStats(supabase: any) {
 async function getBusinesses(supabase: any) {
     const { data } = await supabase
         .from("providers")
-        .select("id, business_name, email, city, rating, is_verified, is_responsive, created_at")
+        .select("id, business_name, email, city, rating, is_verified, is_responsive, created_at, status")
         .order("created_at", { ascending: false });
 
     return data || [];
