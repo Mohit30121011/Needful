@@ -36,6 +36,7 @@ export function BusinessFormWizard({ categories }: { categories: Category[] }) {
             business_name: '',
             description: '',
             city: 'Mumbai',
+            category_slug: '',
             details: {},
             images: [],
         }
@@ -300,6 +301,7 @@ export function BusinessFormWizard({ categories }: { categories: Category[] }) {
                                                                                 key={cat.id}
                                                                                 onClick={() => {
                                                                                     field.onChange(cat.id)
+                                                                                    setValue('category_slug', cat.slug)
                                                                                     setIsOpen(false)
                                                                                     setSearchQuery('')
                                                                                 }}
