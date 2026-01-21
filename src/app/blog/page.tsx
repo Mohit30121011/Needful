@@ -53,7 +53,7 @@ export default async function BlogPage() {
             title: "Preparing Your AC for Summer",
             category: "Seasonal Tips",
             date: "Dec 28, 2025",
-            image: "https://images.unsplash.com/photo-1631545806609-35d4ae440431?q=80&w=800&auto=format&fit=crop",
+            image: "https://images.unsplash.com/photo-1585338107529-13afc5f02586?q=80&w=800&auto=format&fit=crop",
             excerpt: "Essential maintenance tips to ensure your air conditioning runs efficiently all summer long."
         },
         {
