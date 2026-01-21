@@ -39,7 +39,7 @@ const banners: Banner[] = [
         gradient: "from-blue-600/90 via-blue-600/60 to-transparent",
         image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=600",
         cta: "Find Experts",
-        link: "/search?category=repairs",
+        link: "/search?category=contractors",
         icon: Hammer
     },
     {

@@ -26,7 +26,7 @@ const allCategories = [
     { name: 'Gym', slug: 'gym', icon: Zap, color: 'text-yellow-500', bg: 'bg-yellow-50', desc: 'Fitness centers' },
     { name: 'Loans', slug: 'loans', icon: LineChart, color: 'text-emerald-500', bg: 'bg-emerald-50', desc: 'Financial services' },
     { name: 'Insurance', slug: 'insurance', icon: Shield, color: 'text-cyan-500', bg: 'bg-cyan-50', desc: 'Life & health' },
-    { name: 'Repairs', slug: 'repairs', icon: Hammer, color: 'text-orange-600', bg: 'bg-orange-50', desc: 'Home maintenance' },
+    { name: 'Repairs', slug: 'contractors', icon: Hammer, color: 'text-orange-600', bg: 'bg-orange-50', desc: 'Home maintenance' },
     { name: 'Shopping', slug: 'shopping', icon: ShoppingBag, color: 'text-fuchsia-500', bg: 'bg-fuchsia-50', desc: 'Malls & stores' },
     { name: 'Events', slug: 'events', icon: Music, color: 'text-violet-500', bg: 'bg-violet-50', desc: 'Concerts & shows' },
     { name: 'Beauty', slug: 'beauty', icon: Palette, color: 'text-pink-600', bg: 'bg-pink-50', desc: 'Makeup & spa' },

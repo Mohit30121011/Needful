@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { BusinessTable } from "@/components/admin/BusinessTable";
-import { Store, Users, Star, Activity } from "lucide-react";
+import { Store, Users, Star, Activity, TrendingUp } from "lucide-react";
 
 async function getStats(supabase: any) {
     const [
@@ -35,54 +35,77 @@ export default async function DashboardPage() {
     const businesses = await getBusinesses(supabase);
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                <p className="text-muted-foreground">Overview of your platform's performance.</p>
+        <div className="space-y-8">
+            <div className="flex flex-col gap-1">
+                <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
+                <p className="text-gray-500">Overview of your platform's performance.</p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-                    <div className="flex items-center justify-between space-y-0 pb-2">
-                        <h3 className="tracking-tight text-sm font-medium text-muted-foreground">Total Businesses</h3>
-                        <Store className="h-4 w-4 text-primary" />
+                <div className="rounded-2xl bg-gradient-to-br from-[#FF5200] to-orange-600 p-6 shadow-lg shadow-orange-500/20 text-white">
+                    <div className="flex items-center justify-between pb-2">
+                        <h3 className="tracking-tight text-sm font-medium text-white/80">Total Businesses</h3>
+                        <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                            <Store className="h-5 w-5 text-white" />
+                        </div>
                     </div>
-                    <div className="text-2xl font-bold">{stats.businessCount}</div>
-                    <p className="text-xs text-muted-foreground mt-1">+2 from last month</p>
+                    <div className="text-3xl font-bold">{stats.businessCount.toLocaleString()}</div>
+                    <div className="flex items-center gap-1 mt-2">
+                        <TrendingUp className="w-3 h-3" />
+                        <span className="text-xs text-white/80">+2 from last month</span>
+                    </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-                    <div className="flex items-center justify-between space-y-0 pb-2">
-                        <h3 className="tracking-tight text-sm font-medium text-muted-foreground">Total Users</h3>
-                        <Users className="h-4 w-4 text-blue-500" />
+                <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between pb-2">
+                        <h3 className="tracking-tight text-sm font-medium text-gray-500">Total Users</h3>
+                        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                            <Users className="h-5 w-5 text-blue-500" />
+                        </div>
                     </div>
-                    <div className="text-2xl font-bold">{stats.userCount}</div>
-                    <p className="text-xs text-muted-foreground mt-1">+12% from last month</p>
+                    <div className="text-3xl font-bold text-gray-900">{stats.userCount.toLocaleString()}</div>
+                    <div className="flex items-center gap-1 mt-2">
+                        <TrendingUp className="w-3 h-3 text-green-500" />
+                        <span className="text-xs text-gray-500">+12% from last month</span>
+                    </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-                    <div className="flex items-center justify-between space-y-0 pb-2">
-                        <h3 className="tracking-tight text-sm font-medium text-muted-foreground">Total Reviews</h3>
-                        <Star className="h-4 w-4 text-yellow-500" />
+                <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between pb-2">
+                        <h3 className="tracking-tight text-sm font-medium text-gray-500">Total Reviews</h3>
+                        <div className="w-10 h-10 rounded-xl bg-yellow-50 flex items-center justify-center">
+                            <Star className="h-5 w-5 text-yellow-500" />
+                        </div>
                     </div>
-                    <div className="text-2xl font-bold">{stats.reviewCount}</div>
-                    <p className="text-xs text-muted-foreground mt-1">+4% from last month</p>
+                    <div className="text-3xl font-bold text-gray-900">{stats.reviewCount.toLocaleString()}</div>
+                    <div className="flex items-center gap-1 mt-2">
+                        <TrendingUp className="w-3 h-3 text-green-500" />
+                        <span className="text-xs text-gray-500">+4% from last month</span>
+                    </div>
                 </div>
 
-                <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-                    <div className="flex items-center justify-between space-y-0 pb-2">
-                        <h3 className="tracking-tight text-sm font-medium text-muted-foreground">Active Now</h3>
-                        <Activity className="h-4 w-4 text-green-500" />
+                <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between pb-2">
+                        <h3 className="tracking-tight text-sm font-medium text-gray-500">Active Now</h3>
+                        <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+                            <Activity className="h-5 w-5 text-green-500" />
+                        </div>
                     </div>
-                    <div className="text-2xl font-bold">+573</div>
-                    <p className="text-xs text-muted-foreground mt-1">+201 since last hour</p>
+                    <div className="text-3xl font-bold text-gray-900">+573</div>
+                    <div className="flex items-center gap-1 mt-2">
+                        <TrendingUp className="w-3 h-3 text-green-500" />
+                        <span className="text-xs text-gray-500">+201 since last hour</span>
+                    </div>
                 </div>
             </div>
 
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold tracking-tight">Recent Businesses</h2>
-                    <button className="text-sm text-primary hover:underline">View All</button>
+                    <div className="flex items-center gap-3">
+                        <div className="w-1 h-6 bg-gradient-to-b from-[#FF5200] to-orange-600 rounded-full"></div>
+                        <h2 className="text-xl font-bold tracking-tight text-gray-900">Recent Businesses</h2>
+                    </div>
+                    <button className="text-sm text-[#FF5200] hover:text-orange-600 font-medium hover:underline transition-colors">View All</button>
                 </div>
                 <BusinessTable businesses={businesses} />
             </div>

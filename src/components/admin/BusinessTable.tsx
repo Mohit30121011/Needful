@@ -45,10 +45,10 @@ export function BusinessTable({ businesses }: { businesses: Business[] }) {
     };
 
     return (
-        <div className="bg-card rounded-xl border border-border overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left">
-                    <thead className="bg-muted/50 text-muted-foreground font-medium border-b border-border">
+                    <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-200">
                         <tr>
                             <th className="px-6 py-4">Business</th>
                             <th className="px-6 py-4">Location</th>
@@ -56,15 +56,15 @@ export function BusinessTable({ businesses }: { businesses: Business[] }) {
                             <th className="px-6 py-4">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-border">
+                    <tbody className="divide-y divide-gray-100">
                         {businesses.map((business) => (
-                            <tr key={business.id} className="hover:bg-muted/30 transition-colors">
+                            <tr key={business.id} className="hover:bg-orange-50/30 transition-colors">
                                 <td className="px-6 py-4">
-                                    <div className="font-semibold text-foreground">{business.business_name}</div>
-                                    <div className="text-muted-foreground text-xs">{format(new Date(business.created_at), "MMM d, yyyy")}</div>
+                                    <div className="font-semibold text-gray-900">{business.business_name}</div>
+                                    <div className="text-gray-400 text-xs">{format(new Date(business.created_at), "MMM d, yyyy")}</div>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                                    <div className="flex items-center gap-1.5 text-gray-500">
                                         <MapPin className="w-3.5 h-3.5" />
                                         <span>{business.city}</span>
                                     </div>
@@ -72,17 +72,17 @@ export function BusinessTable({ businesses }: { businesses: Business[] }) {
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-2">
                                         {(!business.status || business.status === 'pending') && (
-                                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-600">
+                                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
                                                 Pending
                                             </span>
                                         )}
                                         {business.status === 'approved' && (
-                                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-600">
+                                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
                                                 Approved
                                             </span>
                                         )}
                                         {business.status === 'rejected' && (
-                                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-600">
+                                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
                                                 Rejected
                                             </span>
                                         )}
@@ -91,13 +91,13 @@ export function BusinessTable({ businesses }: { businesses: Business[] }) {
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-2">
                                         {loadingId === business.id ? (
-                                            <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                                            <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
                                         ) : (
                                             <>
                                                 {business.status !== 'approved' && (
                                                     <button
                                                         onClick={() => updateStatus(business.id, 'approved')}
-                                                        className="p-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
+                                                        className="p-2 rounded-xl bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
                                                         title="Approve"
                                                     >
                                                         <CheckCircle className="w-4 h-4" />
@@ -106,7 +106,7 @@ export function BusinessTable({ businesses }: { businesses: Business[] }) {
                                                 {business.status !== 'rejected' && (
                                                     <button
                                                         onClick={() => updateStatus(business.id, 'rejected')}
-                                                        className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                                                        className="p-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
                                                         title="Reject"
                                                     >
                                                         <XCircle className="w-4 h-4" />
@@ -122,7 +122,7 @@ export function BusinessTable({ businesses }: { businesses: Business[] }) {
                 </table>
             </div>
             {businesses.length === 0 && (
-                <div className="p-12 text-center text-muted-foreground">
+                <div className="p-12 text-center text-gray-400">
                     No businesses found.
                 </div>
             )}
