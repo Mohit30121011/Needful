@@ -33,11 +33,13 @@ export default function AdminLoginPage() {
             const { data: { session } } = await supabase.auth.getSession()
 
             if (session) {
-                const { data: profile } = await supabase
+                const { data: userData } = await supabase
                     .from('users')
                     .select('role')
                     .eq('id', session.user.id)
                     .single()
+
+                const profile = userData as { role: string } | null
 
                 if (profile?.role !== 'admin') {
                     await supabase.auth.signOut()
