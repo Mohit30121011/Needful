@@ -103,6 +103,10 @@ export function BusinessHeader({ provider }: BusinessHeaderProps) {
         }
     }
 
+    const workerCategories = ['plumbers', 'electricians', 'carpenters', 'painters', 'ac-repair', 'cleaning', 'salon', 'massage']
+    const isWorker = workerCategories.includes(provider.categories?.slug || '') ||
+        workerCategories.includes(provider.categories?.name?.toLowerCase() || '')
+
     return (
         <div className="bg-white pb-4">
             {/* Breadcrumb - Simplified */}
@@ -118,10 +122,19 @@ export function BusinessHeader({ provider }: BusinessHeaderProps) {
                 <div className="flex flex-col items-start gap-4">
                     <div className="w-full">
                         {/* Line 1: Name */}
-                        <div className="flex items-center gap-3 mb-3">
+                        <div className="flex items-center gap-2 mb-3 flex-wrap">
                             <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight tracking-tight">
                                 {provider.business_name}
                             </h1>
+                            {/* Blue Verified Badge for Workers - Inline */}
+                            {provider.is_verified && isWorker && (
+                                <div className="ml-1.5 translate-y-[2px]" title="Verified Professional">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
+                                        <path d="M22.5 12.5C22.5 11.2 21.6 10.3 21.6 9C21.6 7.7 22.5 6.8 22.5 5.5C22.5 4.1 21.4 3 20 3C18.7 3 17.8 3.9 16.5 3.9C15.2 3.9 14.3 3 13 3C11.7 3 10.8 3.9 9.5 3.9C8.2 3.9 7.3 3 6 3C4.6 3 3.5 4.1 3.5 5.5C3.5 6.8 4.4 7.7 4.4 9C4.4 10.3 3.5 11.2 3.5 12.5C3.5 13.8 4.4 14.7 4.4 16C4.4 17.3 3.5 18.2 3.5 19.5C3.5 20.9 4.6 22 6 22C7.3 22 8.2 21.1 9.5 21.1C10.8 21.1 11.7 22 13 22C14.3 22 15.2 21.1 16.5 21.1C17.8 21.1 18.7 22 20 22C21.4 22 22.5 20.9 22.5 19.5C22.5 18.2 21.6 17.3 21.6 16C21.6 14.7 22.5 13.8 22.5 12.5Z" fill="#3897F0" />
+                                        <path d="M10 17L5 12L6.41 10.59L10 14.17L19.59 4.58L21 6L10 17Z" fill="white" />
+                                    </svg>
+                                </div>
+                            )}
                         </div>
 
                         {/* Line 2: Rating Badge | Count | Verified */}
@@ -134,7 +147,8 @@ export function BusinessHeader({ provider }: BusinessHeaderProps) {
                                 {provider.review_count} Ratings
                             </span>
 
-                            {provider.is_verified && (
+                            {/* Standard Verified Badge for Businesses (kept on 2nd line) */}
+                            {provider.is_verified && !isWorker && (
                                 <div className="flex items-center gap-1.5 ml-2">
                                     <CheckCircle2 className="w-4 h-4 fill-black text-white" />
                                     <span className="text-sm font-semibold text-gray-900">Verified</span>
