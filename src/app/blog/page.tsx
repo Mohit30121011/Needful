@@ -3,6 +3,7 @@ import { Footer } from '@/components/layout/Footer'
 import { createClient } from '@/lib/supabase/server'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default async function BlogPage() {
     const supabase = await createClient()
@@ -14,11 +15,32 @@ export default async function BlogPage() {
         userData = data
     }
 
-    // Mock Posts
+    // Blog Posts with real images
     const posts = [
-        { title: "10 Tips for Home Maintenance", category: "Home Care", date: "Jan 12, 2026", bg: "bg-orange-50" },
-        { title: "How to Choose the Right Electrician", category: "Expert Advice", date: "Jan 08, 2026", bg: "bg-blue-50" },
-        { title: "Top Wedding Venues in Mumbai", category: "Events", date: "Jan 05, 2026", bg: "bg-pink-50" },
+        {
+            slug: "home-maintenance-tips",
+            title: "10 Tips for Home Maintenance",
+            category: "Home Care",
+            date: "Jan 12, 2026",
+            image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=800&auto=format&fit=crop",
+            excerpt: "Keep your home in top shape with these essential maintenance tips that every homeowner should know."
+        },
+        {
+            slug: "choose-right-electrician",
+            title: "How to Choose the Right Electrician",
+            category: "Expert Advice",
+            date: "Jan 08, 2026",
+            image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=800&auto=format&fit=crop",
+            excerpt: "Finding a qualified electrician doesn't have to be daunting. Here's your complete guide to hiring the best."
+        },
+        {
+            slug: "wedding-venues-mumbai",
+            title: "Top Wedding Venues in Mumbai",
+            category: "Events",
+            date: "Jan 05, 2026",
+            image: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop",
+            excerpt: "Discover the most stunning wedding venues in Mumbai for your dream celebration."
+        },
     ]
 
     return (
@@ -44,26 +66,30 @@ export default async function BlogPage() {
 
                     <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                         {posts.map((post, idx) => (
-                            <article key={idx} className="group cursor-pointer">
-                                <div className={`aspect-[4/3] rounded-3xl ${post.bg} mb-6 overflow-hidden relative`}>
-                                    {/* Placeholder for real image */}
-                                    <div className="absolute inset-0 flex items-center justify-center text-gray-400 font-medium opacity-50">
-                                        Image Placeholder
+                            <Link href={`/blog/${post.slug}`} key={idx}>
+                                <article className="group cursor-pointer">
+                                    <div className="aspect-[4/3] rounded-3xl mb-6 overflow-hidden relative bg-gray-100">
+                                        <img
+                                            src={post.image}
+                                            alt={post.title}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                                     </div>
-                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
-                                </div>
-                                <div className="flex items-center gap-3 text-sm font-medium mb-3">
-                                    <span className="text-[#FF5200]">{post.category}</span>
-                                    <span className="text-gray-300">•</span>
-                                    <span className="text-gray-500">{post.date}</span>
-                                </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-[#FF5200] transition-colors">
-                                    {post.title}
-                                </h3>
-                                <div className="flex items-center gap-2 text-gray-500 font-medium group-hover:gap-3 transition-all">
-                                    Read Article <ArrowRight className="w-4 h-4" />
-                                </div>
-                            </article>
+                                    <div className="flex items-center gap-3 text-sm font-medium mb-3">
+                                        <span className="text-[#FF5200]">{post.category}</span>
+                                        <span className="text-gray-300">•</span>
+                                        <span className="text-gray-500">{post.date}</span>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-[#FF5200] transition-colors">
+                                        {post.title}
+                                    </h3>
+                                    <p className="text-gray-500 mb-4 line-clamp-2">{post.excerpt}</p>
+                                    <div className="flex items-center gap-2 text-[#FF5200] font-bold group-hover:gap-3 transition-all">
+                                        Read Article <ArrowRight className="w-4 h-4" />
+                                    </div>
+                                </article>
+                            </Link>
                         ))}
                     </div>
 
@@ -78,3 +104,4 @@ export default async function BlogPage() {
         </div>
     )
 }
+
