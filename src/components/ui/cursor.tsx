@@ -8,8 +8,8 @@ export const CustomCursor = () => {
     const cursorX = useMotionValue(-100);
     const cursorY = useMotionValue(-100);
 
-    // Smooth spring for the trailing ring
-    const springConfig = { damping: 25, stiffness: 300 };
+    // Smoother, floatier spring for a premium feel
+    const springConfig = { damping: 20, stiffness: 150 };
     const cursorXSpring = useSpring(cursorX, springConfig);
     const cursorYSpring = useSpring(cursorY, springConfig);
 
@@ -46,35 +46,37 @@ export const CustomCursor = () => {
 
     return (
         <>
-            {/* Precision Dot - Follows mouse instantly (High Performance) */}
+            {/* Precision Dot - Pure White with subtle shadow for visibility */}
             <motion.div
-                className="fixed top-0 left-0 w-2 h-2 bg-[#FF5200] rounded-full pointer-events-none z-[9999]"
+                className="fixed top-0 left-0 w-2.5 h-2.5 bg-white rounded-full pointer-events-none z-[9999] shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
                 style={{
                     translateX: cursorX,
                     translateY: cursorY,
-                    x: -4, // Center align (width/2)
-                    y: -4, // Center align (height/2)
+                    x: -5,
+                    y: -5,
                 }}
             />
 
-            {/* Interaction Ring - Follows with physics */}
+            {/* Interaction Ring - Light Glassy Theme */}
             <motion.div
-                className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9998] border border-gray-400/50"
+                className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9998]"
                 style={{
                     translateX: cursorXSpring,
                     translateY: cursorYSpring,
-                    x: -16, // Center align
+                    x: -16,
                     y: -16,
                 }}
                 animate={{
-                    scale: isHovering ? 2 : 1, // Expands on hover
-                    borderColor: isHovering ? "#FF5200" : "rgba(156, 163, 175, 0.3)", // Turns orange on hover
-                    backgroundColor: isHovering ? "rgba(255, 82, 0, 0.05)" : "transparent", // Slight tint on hover
-                    borderWidth: isHovering ? "1px" : "1px",
+                    scale: isHovering ? 2 : 1,
+                    backgroundColor: isHovering ? "rgba(255, 82, 0, 0.08)" : "rgba(255, 255, 255, 0.1)", // Light Orange tint on hover, faint white otherwise
+                    borderColor: isHovering ? "rgba(255, 82, 0, 0.2)" : "rgba(255, 255, 255, 0.4)", // Light Orange border on hover
+                    borderWidth: "1px",
+                    backdropFilter: "blur(1px)",
                 }}
                 transition={{
-                    scale: { type: "spring", stiffness: 300, damping: 20 },
-                    borderColor: { duration: 0.2 }
+                    scale: { type: "spring", stiffness: 300, damping: 25 },
+                    backgroundColor: { duration: 0.2 },
+                    borderColor: { duration: 0.2 },
                 }}
             />
         </>
