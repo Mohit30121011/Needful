@@ -79,7 +79,7 @@ export default async function AnalyticsPage({ params }: { params: Promise<{ id: 
                                     <SelectItem value="90d">Last 3 Months</SelectItem>
                                 </SelectContent>
                             </Select>
-                            <Button variant="outline" onClick={() => { }} className="hidden md:flex">
+                            <Button variant="outline" disabled className="hidden md:flex">
                                 Export Report
                             </Button>
                         </div>
