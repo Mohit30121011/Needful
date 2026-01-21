@@ -4,6 +4,7 @@ import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
 import { AnimatedBackground } from '@/components/layout/AnimatedBackground'
 import { ClientBootAnimation } from '@/components/layout/ClientBootAnimation'
+import { ChatboxWrapper } from '@/components/chat/ChatboxWrapper'
 
 
 export const metadata: Metadata = {
@@ -46,8 +47,13 @@ export default function RootLayout({
         <AnimatedBackground />
 
         {children}
+
+        {/* AI Chatbox - hidden on login/signup pages */}
+        <ChatboxWrapper />
+
         <Toaster position="top-right" />
       </body>
     </html>
   )
 }
+

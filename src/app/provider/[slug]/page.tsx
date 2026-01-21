@@ -200,12 +200,12 @@ export default async function ProviderDetailPage({ params }: PageProps) {
                                 <div className="p-6">
                                     <div className="flex flex-col md:flex-row gap-6">
                                         {/* Image Gallery */}
-                                        <div className="relative w-full md:w-64 h-48 md:h-64 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
+                                        <div className="relative w-full md:w-64 h-48 md:h-64 flex-shrink-0 rounded-xl overflow-hidden bg-white border border-gray-100">
                                             <Image
                                                 src={primaryImage}
                                                 alt={provider.business_name}
                                                 fill
-                                                className="object-cover"
+                                                className="object-contain p-2"
                                             />
                                             {provider.provider_images && provider.provider_images.length > 1 && (
                                                 <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">

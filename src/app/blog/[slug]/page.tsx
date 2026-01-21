@@ -129,7 +129,7 @@ const articles: Record<string, {
         date: "December 28, 2025",
         author: "Needful Expert",
         readTime: "5 min read",
-        image: "https://images.unsplash.com/photo-1631545806609-35d4ae440431?q=80&w=1200&auto=format&fit=crop",
+        image: "https://images.unsplash.com/photo-1585338107529-13afc5f02586?q=80&w=1200&auto=format&fit=crop",
         content: [
             { type: 'paragraph', text: "Indian summers can be brutal, and the last thing you want is your AC breaking down during a heat wave. A little preparation goes a long way in ensuring your air conditioning runs efficiently all season." },
             { type: 'heading', text: "Clean or Replace Air Filters" },
@@ -208,15 +208,19 @@ export default async function BlogArticlePage({ params }: PageProps) {
                 <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-100/60 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3 pointer-events-none" />
 
                 <article className="container mx-auto px-4 max-w-4xl relative z-10">
-                    {/* Back Button */}
-                    <Link href="/blog" className="inline-flex items-center gap-2 text-gray-500 hover:text-[#FF5200] transition-colors mb-12 group">
-                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                        <span className="font-medium">Back to Blog</span>
-                    </Link>
+                    {/* Back Button - on its own line */}
+                    <div className="mb-8">
+                        <Link href="/blog" className="inline-flex items-center gap-2 text-gray-500 hover:text-[#FF5200] transition-colors group">
+                            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                            <span className="font-medium">Back to Blog</span>
+                        </Link>
+                    </div>
 
-                    {/* Category Badge */}
-                    <div className="inline-block px-4 py-1.5 rounded-full bg-[#FF5200]/10 text-[#FF5200] font-bold text-sm tracking-wide mb-6">
-                        {article.category}
+                    {/* Category Badge - on its own line */}
+                    <div className="mb-6">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-[#FF5200]/10 text-[#FF5200] font-bold text-sm tracking-wide">
+                            {article.category}
+                        </span>
                     </div>
 
                     {/* Title */}
