@@ -17,6 +17,7 @@ interface WorkerCardProps {
         categories?: Category
         services?: Service[]
         provider_images?: { url: string; is_primary: boolean }[]
+        experience_years?: number
     }
     jobsDone?: number // New prop for job count
     onSave?: (providerId: string) => void
@@ -41,9 +42,10 @@ export function WorkerCard({ provider, jobsDone = 0, onSave, isSaved = false, cl
             const result = await toggleFavorite(provider.id)
             if (result.error) throw new Error(result.error)
             onSave?.(provider.id)
-        } catch (err) {
+        } catch (err: any) {
             setIsFavorited(!newState)
-            toast.error("Failed to update favorite")
+            // Show the actual error message from the server
+            toast.error(err.message || "Failed to update favorite")
         }
     }
 
