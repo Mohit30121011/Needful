@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Bell, Search } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -8,12 +9,15 @@ import { Button } from "@/components/ui/button";
 export function AdminHeader() {
     const [searchQuery, setSearchQuery] = useState("");
 
+    const router = useRouter();
+
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!searchQuery.trim()) return;
+
         console.log('Searching for:', searchQuery);
-        toast.info(`Searching for: "${searchQuery}"`, {
-            description: "Global admin search is not yet connected to the backend."
-        });
+        toast.info(`Searching users for: "${searchQuery}"`);
+        router.push(`/admin/users?q=${encodeURIComponent(searchQuery)}`);
     };
 
     return (
