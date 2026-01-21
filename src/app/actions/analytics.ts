@@ -14,7 +14,7 @@ export async function trackAnalyticsEvent(providerId: string, eventType: EventTy
                 provider_id: providerId,
                 event_type: eventType,
                 metadata: metadata || null
-            })
+            }) as any
 
         if (error) {
             console.error('Failed to track analytics:', error)
