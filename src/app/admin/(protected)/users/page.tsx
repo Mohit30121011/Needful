@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useSearchParams } from 'next/navigation'
 import {
     Table,
     TableBody,
@@ -19,14 +20,25 @@ import { User } from '@/types/database'
 import { AdminPageTransition } from '@/components/admin/AdminPageTransition'
 
 export default function UsersPage() {
+    const searchParams = useSearchParams()
+    const initialQuery = searchParams.get('q') || ''
+
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(true)
-    const [searchQuery, setSearchQuery] = useState('')
+    const [searchQuery, setSearchQuery] = useState(initialQuery)
     const supabase = createClient()
 
     useEffect(() => {
         fetchUsers()
     }, [])
+
+    // Update search query if URL changes
+    useEffect(() => {
+        const query = searchParams.get('q')
+        if (query !== null) {
+            setSearchQuery(query)
+        }
+    }, [searchParams])
 
     const fetchUsers = async () => {
         setLoading(true)
@@ -52,7 +64,6 @@ export default function UsersPage() {
         <AdminPageTransition>
             <div className="space-y-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    {/* ... header ... */}
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight text-gray-900">Users</h1>
                         <p className="text-muted-foreground mt-1">Manage your platform users and their roles.</p>
