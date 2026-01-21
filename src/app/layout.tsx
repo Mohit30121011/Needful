@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { AnimatedBackground } from '@/components/layout/AnimatedBackground'
 import { ClientBootAnimation } from '@/components/layout/ClientBootAnimation'
 import { ChatboxWrapper } from '@/components/chat/ChatboxWrapper'
+import { CustomCursor } from '@/components/ui/cursor'
 
 
 export const metadata: Metadata = {
@@ -32,8 +33,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`} suppressHydrationWarning>
-        {/* Custom Cursor */}
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased cursor-none`} suppressHydrationWarning>
+        <CustomCursor />
 
 
 
