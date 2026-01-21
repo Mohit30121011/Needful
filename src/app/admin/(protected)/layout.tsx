@@ -11,18 +11,18 @@ export default async function AdminLayout({
     const supabase = await createClient();
 
     const {
-        data: { session },
-    } = await supabase.auth.getSession();
+        data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
-        redirect('/login');
+    if (!user) {
+        redirect('/admin/login');
     }
 
     // Check if user has admin role
     const { data: userProfile } = await supabase
         .from('users')
         .select('role')
-        .eq('id', session.user.id)
+        .eq('id', user.id)
         .single();
 
     // Type assertion to fix build error

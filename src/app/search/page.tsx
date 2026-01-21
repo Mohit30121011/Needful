@@ -283,7 +283,8 @@ function SearchPageContent() {
 
             if (error) {
                 console.error('Error fetching providers:', error)
-                setError('Failed to load services. Please try again.')
+                // Show actual error message for debugging
+                setError(`Failed to load services: ${error.message || JSON.stringify(error)}`)
             } else {
                 console.log('Providers fetched successfully:', data?.length)
 

@@ -18,11 +18,11 @@ UPDATE providers SET status = 'approved' WHERE status IS NULL OR status = 'pendi
 -- 5. AFTER Creating the user, run this SQL to make them an admin:
 -- Replace 'admin@needful.com' with the actual email if different.
 
-UPDATE users
+UPDATE users AS u
 SET role = 'admin'
-FROM auth.users
-WHERE users.id = auth.users.id
-AND auth.users.email = 'admin@needful.com';
+FROM auth.users AS au
+WHERE u.id = au.id
+AND au.email = 'admin@needful.com';
 
 -- Verify the update
 SELECT * FROM users WHERE role = 'admin';
