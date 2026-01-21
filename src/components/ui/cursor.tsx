@@ -1,20 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export const CustomCursor = () => {
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [isHovering, setIsHovering] = useState(false);
+    const cursorX = useMotionValue(-100);
+    const cursorY = useMotionValue(-100);
+
+    // Smooth spring for the trailing ring
+    const springConfig = { damping: 25, stiffness: 300 };
+    const cursorXSpring = useSpring(cursorX, springConfig);
+    const cursorYSpring = useSpring(cursorY, springConfig);
 
     useEffect(() => {
-        const updateMousePosition = (e: MouseEvent) => {
-            setMousePosition({ x: e.clientX, y: e.clientY });
+        const moveCursor = (e: MouseEvent) => {
+            cursorX.set(e.clientX);
+            cursorY.set(e.clientY);
         };
 
         const handleMouseOver = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
-            // Check if the target or its parents are clickable
             const isClickable =
                 target.tagName === "A" ||
                 target.tagName === "BUTTON" ||
@@ -23,51 +29,52 @@ export const CustomCursor = () => {
                 target.getAttribute("role") === "button" ||
                 target.tagName === "INPUT" ||
                 target.tagName === "TEXTAREA" ||
-                target.tagName === "SELECT";
+                target.tagName === "SELECT" ||
+                target.classList.contains("cursor-pointer");
 
             setIsHovering(!!isClickable);
         };
 
-        window.addEventListener("mousemove", updateMousePosition);
+        window.addEventListener("mousemove", moveCursor);
         window.addEventListener("mouseover", handleMouseOver);
 
         return () => {
-            window.removeEventListener("mousemove", updateMousePosition);
+            window.removeEventListener("mousemove", moveCursor);
             window.removeEventListener("mouseover", handleMouseOver);
         };
-    }, []);
+    }, [cursorX, cursorY]);
 
     return (
         <>
-            {/* Main Dot - Orange */}
+            {/* Precision Dot - Follows mouse instantly (High Performance) */}
             <motion.div
-                className="fixed top-0 left-0 w-3 h-3 bg-[#FF5200] rounded-full pointer-events-none z-[9999]"
-                animate={{
-                    x: mousePosition.x - 6,
-                    y: mousePosition.y - 6,
-                    scale: isHovering ? 1.5 : 1,
-                }}
-                transition={{
-                    type: "spring",
-                    stiffness: 800,
-                    damping: 35,
+                className="fixed top-0 left-0 w-2 h-2 bg-[#FF5200] rounded-full pointer-events-none z-[9999]"
+                style={{
+                    translateX: cursorX,
+                    translateY: cursorY,
+                    x: -4, // Center align (width/2)
+                    y: -4, // Center align (height/2)
                 }}
             />
 
-            {/* Trailing Ring - White/Black Theme */}
+            {/* Interaction Ring - Follows with physics */}
             <motion.div
-                className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9998] border-2 border-white bg-black/10 backdrop-blur-[1px] shadow-sm shadow-black/20"
+                className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9998] border border-gray-400/50"
+                style={{
+                    translateX: cursorXSpring,
+                    translateY: cursorYSpring,
+                    x: -16, // Center align
+                    y: -16,
+                }}
                 animate={{
-                    x: mousePosition.x - 16,
-                    y: mousePosition.y - 16,
-                    scale: isHovering ? 2 : 1,
-                    opacity: isHovering ? 0.8 : 0.5,
-                    borderColor: isHovering ? "#FF5200" : "#ffffff", // Optional: Ring turns orange on hover
+                    scale: isHovering ? 2 : 1, // Expands on hover
+                    borderColor: isHovering ? "#FF5200" : "rgba(156, 163, 175, 0.3)", // Turns orange on hover
+                    backgroundColor: isHovering ? "rgba(255, 82, 0, 0.05)" : "transparent", // Slight tint on hover
+                    borderWidth: isHovering ? "1px" : "1px",
                 }}
                 transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 25,
+                    scale: { type: "spring", stiffness: 300, damping: 20 },
+                    borderColor: { duration: 0.2 }
                 }}
             />
         </>
