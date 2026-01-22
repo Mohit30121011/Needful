@@ -1,6 +1,7 @@
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { HeroSearch } from '@/components/home/HeroSearch'
+import { StoriesScrollBar } from '@/components/home/StoriesScrollBar'
 import { SuperGrid } from '@/components/home/SuperGrid'
 import { UtilitySections } from '@/components/home/UtilitySections'
 import { ServiceProviders } from '@/components/home/ServiceProviders'
@@ -22,7 +23,7 @@ export default async function HomePage() {
   if (user) {
     const { data } = await supabase
       .from('users')
-      .select('name, email, role')
+      .select('name, email, role, city')
       .eq('id', user.id)
       .single()
     userData = data
@@ -33,8 +34,13 @@ export default async function HomePage() {
       <Header user={userData} />
 
       <main className="flex-1 pt-24">
-        {/* Hero Search Section & Banners */}
+        {/* Hero Search Section */}
         <HeroSearch />
+
+        {/* Business Stories Section */}
+        <StoriesScrollBar userCity={userData?.city as string | undefined} />
+
+        {/* Promo Banners */}
         <PromoBanners />
 
         {/* Dense Navigation Grid (Justdial Style) */}

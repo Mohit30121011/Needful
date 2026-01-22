@@ -289,6 +289,67 @@ export type Database = {
                     created_at?: string
                 }
             }
+            business_stories: {
+                Row: {
+                    id: string
+                    provider_id: string
+                    media_url: string
+                    media_type: 'image' | 'video'
+                    thumbnail_url: string | null
+                    caption: string | null
+                    view_count: number
+                    is_active: boolean
+                    created_at: string
+                    expires_at: string
+                }
+                Insert: {
+                    id?: string
+                    provider_id: string
+                    media_url: string
+                    media_type: 'image' | 'video'
+                    thumbnail_url?: string | null
+                    caption?: string | null
+                    view_count?: number
+                    is_active?: boolean
+                    created_at?: string
+                    expires_at?: string
+                }
+                Update: {
+                    id?: string
+                    provider_id?: string
+                    media_url?: string
+                    media_type?: 'image' | 'video'
+                    thumbnail_url?: string | null
+                    caption?: string | null
+                    view_count?: number
+                    is_active?: boolean
+                    created_at?: string
+                    expires_at?: string
+                }
+            }
+            story_views: {
+                Row: {
+                    id: string
+                    story_id: string
+                    user_id: string | null
+                    viewer_ip: string | null
+                    viewed_at: string
+                }
+                Insert: {
+                    id?: string
+                    story_id: string
+                    user_id?: string | null
+                    viewer_ip?: string | null
+                    viewed_at?: string
+                }
+                Update: {
+                    id?: string
+                    story_id?: string
+                    user_id?: string | null
+                    viewer_ip?: string | null
+                    viewed_at?: string
+                }
+            }
         }
         Views: {
             [_ in never]: never
@@ -314,6 +375,8 @@ export type Service = Tables<'services'>
 export type ProviderImage = Tables<'provider_images'>
 export type Review = Tables<'reviews'>
 export type Favorite = Tables<'favorites'>
+export type BusinessStory = Tables<'business_stories'>
+export type StoryView = Tables<'story_views'>
 
 // Extended types with relations
 export type ProviderWithCategory = Provider & {
