@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY
+let lastProvidersCache: any[] = []
+
 
 const SYSTEM_PROMPT = `You are **NeedFul AI** — the official AI assistant for NeedFul, a premium local services discovery and booking platform for Mumbai.
 
@@ -297,6 +299,16 @@ export async function POST(request: Request) {
 
         const supabase = await createClient()
         const lowerMessage = message.toLowerCase()
+        const isBestQuery =
+            lowerMessage.includes('best') ||
+            lowerMessage.includes('konsa') ||
+            lowerMessage.includes('kaunsa') ||
+            lowerMessage.includes('accha');
+
+        const isCompareQuery =
+            lowerMessage.includes('compare') ||
+            lowerMessage.includes('comparison') ||
+            lowerMessage.includes('dono');
 
         // Enhanced keyword mapping
         const categoryKeywords: Record<string, string> = {
@@ -386,6 +398,11 @@ export async function POST(request: Request) {
             } else if (data) {
                 providers = data
             }
+            // 🧠 Store providers for follow-up comparison queries
+            if (providers.length > 0) {
+                lastProvidersCache = providers
+            }
+
         } catch (dbError) {
             console.error('DB error:', dbError)
         }
@@ -438,6 +455,29 @@ ${i + 1}. **${p.business_name}**${distInfo}
                 context = '\n\n[System Note: No specific local providers found in database matching the LATEST query keywords. If user is greeting, respond warmly. If asking irrelevant question, politely decline.]'
             }
         }
+        // 🏆 BEST PROVIDER HANDLER (Review + Rating based)
+        if (isBestQuery && lastProvidersCache.length > 0) {
+            // Sort by rating first, then review count
+            const sorted = [...lastProvidersCache].sort((a, b) => {
+                if (b.rating === a.rating) {
+                    return (b.review_count || 0) - (a.review_count || 0)
+                }
+                return b.rating - a.rating
+            })
+
+            const best = sorted[0]
+
+            return NextResponse.json({
+                response: `✅ **Best Option Based on Reviews & Ratings**
+
+**${best.business_name}** ⭐ (${best.rating}⭐, ${best.review_count} reviews)
+
+📍 Location: ${best.city}  
+💬 Reason: Customers consistently rate this provider highly for service quality and reliability.
+
+Aap chahein toh main booking ya contact details de sakta/sakti hoon. 📞`
+            })
+        }
 
         // 2. CHECK API KEY - MOCK MODE FALLBACK
         // Only use mock mode if API key is missing
@@ -462,10 +502,56 @@ ${i + 1}. **${p.business_name}**${distInfo}
                     response: "Maaf kijiye, mujhe koi services nahi mili. Aap 'Search' page par try kar sakte hain ya kuch aur search karein! 🔍"
                 })
             }
+            // 🔥 AUTO COMPARISON HANDLER FOR FOLLOW-UP QUERIES
+            if (isCompareQuery && lastProvidersCache.length >= 2) {
+                const p1 = lastProvidersCache[0]
+                const p2 = lastProvidersCache[1]
+
+                return NextResponse.json({
+                    response: `🆚 **Comparison: ${p1.business_name} vs ${p2.business_name}**
+
+**1️⃣ ${p1.business_name}**
+⭐ Rating: ${p1.rating} (${p1.review_count} reviews)
+📍 Location: ${p1.city}
+💰 Price: ${p1.services?.[0]?.price ? '₹' + p1.services[0].price : 'On request'}
+
+**2️⃣ ${p2.business_name}**
+⭐ Rating: ${p2.rating} (${p2.review_count} reviews)
+📍 Location: ${p2.city}
+💰 Price: ${p2.services?.[0]?.price ? '₹' + p2.services[0].price : 'On request'}
+
+**✅ Verdict**:
+${p1.rating >= p2.rating
+                            ? `Higher rated → **${p1.business_name}**`
+                            : `More budget-friendly → **${p2.business_name}**`}
+
+Kya aap kisi ko book karna chahenge? 📞`
+                })
+            }
+
             // If there's history but no providers and no API key, we can't help much
-            return NextResponse.json({
-                response: "Main aapke pichle sawal ke context mein jawab dena chahta hoon, lekin AI service abhi available nahi hai. Kripya thodi der baad try karein. 🙏"
-            })
+            // If no API key but this is a follow-up question,
+            // allow the AI to answer based on conversation history + context
+            if (!GROQ_API_KEY) {
+                if (providers.length > 0) {
+                    // existing logic (show providers)
+                }
+
+                // 🟢 FOLLOW-UP HANDLING FIX
+                if (messageHistory.length > 0) {
+                    return NextResponse.json({
+                        response:
+                            "Samajh gaya! Aap apne pichle sawal ke follow-up ke baare mein pooch rahe hain. Kripya us service provider ke baare mein thoda aur clarify karein, jaise timing, location, ya pricing. 🙏"
+                    })
+                }
+
+                // ❌ Only for FIRST query with no data
+                return NextResponse.json({
+                    response:
+                        "Maaf kijiye, is query ke liye koi relevant services available nahi hain. Aap dusri category ya location try kar sakte hain. 🔍"
+                })
+            }
+
         }
 
         // 3. Call Groq API with RETRY LOGIC (Only if Key exists)
