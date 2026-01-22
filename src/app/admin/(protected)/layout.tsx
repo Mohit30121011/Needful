@@ -10,7 +10,27 @@ export default async function AdminLayout({
 }: {
     children: React.ReactNode;
 }) {
-    // Auth check would go here if needed
+    const supabase = await createClient();
+
+    // Check if user is authenticated
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        // Not logged in - redirect to admin login
+        redirect('/admin/login');
+    }
+
+    // Check if user has admin role
+    const { data: userData } = await (supabase as any)
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+    if (!userData || userData.role !== 'admin') {
+        // User is not an admin - redirect to admin login
+        redirect('/admin/login');
+    }
 
     return (
         <div className="min-h-screen text-foreground flex relative">
