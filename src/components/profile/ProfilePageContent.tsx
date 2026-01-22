@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { ServiceCard } from '@/components/listing/ServiceCard'
 import { WorkerCard } from '@/components/listing/WorkerCard'
-import { User, LogOut, Heart, Settings, Shield, Briefcase, Building2, Store } from 'lucide-react'
+import { User, LogOut, Heart, Settings, Shield, Briefcase, Building2, Store, LayoutDashboard } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
@@ -230,6 +230,15 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
                                             <Shield className="h-4 w-4 text-gray-500" />
                                         </div>
                                         Privacy & Security
+                                    </button>
+                                    <button
+                                        onClick={() => router.push('/admin/dashboard')}
+                                        className="w-full text-left px-5 py-4 flex items-center gap-4 bg-[#FF5200] text-white hover:bg-[#E04800] transition-all border-l-4 border-[#FF5200] cursor-pointer"
+                                    >
+                                        <div className="p-2 rounded-lg bg-white/20">
+                                            <LayoutDashboard className="h-4 w-4 text-white" />
+                                        </div>
+                                        Admin Access
                                     </button>
                                 </div>
                                 <div className="h-px bg-gray-100"></div>
