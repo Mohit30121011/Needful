@@ -26,6 +26,15 @@ const MapPicker = dynamic(() => import('@/components/ui/map-picker'), {
     loading: () => null
 })
 
+import { createOrder, verifyPayment } from '@/app/actions/payment'
+
+// Add Razorpay types locally
+declare global {
+    interface Window {
+        Razorpay: any;
+    }
+}
+
 type Category = {
     id: string;
     name: string;
@@ -39,6 +48,19 @@ export function BusinessFormWizard({ categories }: { categories: Category[] }) {
     const router = useRouter()
     const [isMapOpen, setIsMapOpen] = useState(false)
 
+    // Load Razorpay Script
+    useEffect(() => {
+        const script = document.createElement('script')
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+        script.async = true
+        document.body.appendChild(script)
+
+        return () => {
+            if (document.body.contains(script)) {
+                document.body.removeChild(script)
+            }
+        }
+    }, [])
 
     const form = useForm<CreateBusinessInput>({
         resolver: zodResolver(createBusinessSchema),
@@ -105,10 +127,77 @@ export function BusinessFormWizard({ categories }: { categories: Category[] }) {
         }
     }
 
-    const onSubmit = async (data: CreateBusinessInput) => {
-        setIsLoading(true)
-        data.category_slug = selectedCategory?.slug || ''
+    const handlePaymentAndSubmit = async (data: CreateBusinessInput) => {
+        try {
+            // 1. Create Order
+            const { orderId, amount, error } = await createOrder(5000) // 5000 RS
 
+            if (error || !orderId) {
+                toast.error('Failed to initiate payment')
+                setIsLoading(false)
+                return
+            }
+
+            const supabase = createClient()
+            const { data: { user } } = await supabase.auth.getUser()
+
+            // 2. Open Razorpay Modal
+            const options = {
+                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                amount: amount,
+                currency: "INR",
+                name: "NeedFul Business",
+                description: "Business Registration Fee",
+                image: "/logo.png",
+                order_id: orderId,
+                handler: async function (response: any) {
+                    try {
+                        // 3. Verify Payment
+                        const verification = await verifyPayment(
+                            response.razorpay_order_id,
+                            response.razorpay_payment_id,
+                            response.razorpay_signature
+                        )
+
+                        if (verification.success) {
+                            // 4. Submit Business Data on Success
+                            await submitBusinessData(data)
+                        } else {
+                            toast.error('Payment verification failed')
+                            setIsLoading(false)
+                        }
+                    } catch (err) {
+                        console.error('Payment verification error:', err)
+                        toast.error('Payment verification failed')
+                        setIsLoading(false)
+                    }
+                },
+                prefill: {
+                    name: user?.user_metadata?.full_name || '',
+                    email: user?.email || '',
+                    contact: data.phone
+                },
+                theme: {
+                    color: "#FF5200"
+                }
+            }
+
+            const razorpay = new window.Razorpay(options)
+            razorpay.open()
+
+            razorpay.on('payment.failed', function (response: any) {
+                toast.error('Payment failed: ' + response.error.description)
+                setIsLoading(false)
+            });
+
+        } catch (error) {
+            console.error('Payment initiation error:', error)
+            toast.error('Something went wrong with payment')
+            setIsLoading(false)
+        }
+    }
+
+    const submitBusinessData = async (data: CreateBusinessInput) => {
         try {
             const res = await createBusiness(null, data)
             if (res.error) {
@@ -122,6 +211,14 @@ export function BusinessFormWizard({ categories }: { categories: Category[] }) {
         } finally {
             setIsLoading(false)
         }
+    }
+
+    const onSubmit = async (data: CreateBusinessInput) => {
+        setIsLoading(true)
+        data.category_slug = selectedCategory?.slug || ''
+
+        // Trigger payment flow instead of direct submission
+        await handlePaymentAndSubmit(data)
     }
 
     const steps = [
