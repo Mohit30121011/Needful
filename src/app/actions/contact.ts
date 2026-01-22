@@ -9,6 +9,16 @@ interface ContactFormData {
     message: string
 }
 
+interface FeedbackInsert {
+    user_id: string | null
+    name: string
+    email: string
+    subject: string
+    message: string
+    type: string
+    status: string
+}
+
 export async function submitContactForm(formData: ContactFormData) {
     try {
         const supabase = await createClient()
@@ -17,7 +27,8 @@ export async function submitContactForm(formData: ContactFormData) {
         const { data: { user } } = await supabase.auth.getUser()
 
         // Insert feedback into database
-        const { error } = await supabase
+        // Using type assertion since feedbacks table is not in generated types yet
+        const { error } = await (supabase as any)
             .from('feedbacks')
             .insert({
                 user_id: user?.id || null,
@@ -27,7 +38,7 @@ export async function submitContactForm(formData: ContactFormData) {
                 message: formData.message,
                 type: 'general',
                 status: 'pending'
-            })
+            } as FeedbackInsert)
 
         if (error) {
             console.error('Error submitting feedback:', error)
@@ -53,7 +64,8 @@ export async function getUserFeedbacks() {
         }
 
         // Fetch user's feedbacks
-        const { data, error } = await supabase
+        // Using type assertion since feedbacks table is not in generated types yet
+        const { data, error } = await (supabase as any)
             .from('feedbacks')
             .select('*')
             .eq('user_id', user.id)

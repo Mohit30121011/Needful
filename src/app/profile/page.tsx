@@ -27,7 +27,7 @@ export default async function ProfilePage() {
         .eq('user_id', user.id)
 
     // Fetch user's feedbacks (contact form submissions)
-    const { data: userFeedbacks } = await supabase
+    const { data: userFeedbacks } = await (supabase as any)
         .from('feedbacks')
         .select('*')
         .eq('user_id', user.id)
