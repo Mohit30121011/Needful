@@ -63,7 +63,10 @@ export function EnquireModal({ isOpen, onClose, businessName, providerId }: Enqu
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-            <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden bg-transparent border-0 shadow-none [&>button]:hidden">
+            <DialogContent
+                className="sm:max-w-[500px] p-0 overflow-hidden bg-transparent border-0 shadow-none [&>button]:hidden"
+                onClick={(e) => e.stopPropagation()}
+            >
                 <AnimatePresence mode="wait">
                     {step === 'form' ? (
                         <motion.div
