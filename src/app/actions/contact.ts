@@ -82,3 +82,25 @@ export async function getUserFeedbacks() {
         return { feedbacks: [] }
     }
 }
+
+export async function markFeedbacksAsViewed(feedbackIds: string[]) {
+    try {
+        const supabase = await createClient()
+
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return { error: 'Not authenticated' }
+
+        const { error } = await (supabase as any)
+            .from('feedbacks')
+            .update({ user_viewed: true })
+            .in('id', feedbackIds)
+            .eq('user_id', user.id) // Security check
+
+        if (error) throw error
+
+        return { success: true }
+    } catch (error) {
+        console.error('Error marking feedbacks as viewed:', error)
+        return { error: 'Failed to update' }
+    }
+}

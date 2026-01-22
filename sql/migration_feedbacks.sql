@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS feedbacks (
   status TEXT DEFAULT 'pending',
   admin_reply TEXT,
   admin_replied_at TIMESTAMPTZ,
+  user_viewed BOOLEAN DEFAULT FALSE,  -- Track if user has seen the reply
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -30,6 +31,7 @@ ALTER TABLE feedbacks ENABLE ROW LEVEL SECURITY;
 -- Drop existing policies if they exist
 DROP POLICY IF EXISTS "Anyone can create feedback" ON feedbacks;
 DROP POLICY IF EXISTS "Users can view own feedback" ON feedbacks;
+DROP POLICY IF EXISTS "Users can update own feedback viewed status" ON feedbacks;
 DROP POLICY IF EXISTS "Admins can view all feedbacks" ON feedbacks;
 DROP POLICY IF EXISTS "Admins can update feedbacks" ON feedbacks;
 DROP POLICY IF EXISTS "Admins can delete feedbacks" ON feedbacks;
@@ -41,6 +43,10 @@ CREATE POLICY "Anyone can create feedback" ON feedbacks
 -- Policy: Users can view their own feedback
 CREATE POLICY "Users can view own feedback" ON feedbacks 
   FOR SELECT USING (auth.uid() = user_id);
+
+-- Policy: Users can update their own feedback (specifically for marking as viewed)
+CREATE POLICY "Users can update own feedback viewed status" ON feedbacks 
+  FOR UPDATE USING (auth.uid() = user_id);
 
 -- Policy: Admins can view all feedbacks
 CREATE POLICY "Admins can view all feedbacks" ON feedbacks 

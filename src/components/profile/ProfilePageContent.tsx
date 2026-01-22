@@ -18,6 +18,7 @@ import { toast } from 'sonner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import type { ProviderWithDetails } from '@/types/database'
 import { formatDistanceToNow } from 'date-fns'
+import { markFeedbacksAsViewed } from '@/app/actions/contact'
 
 interface Feedback {
     id: string
@@ -29,6 +30,7 @@ interface Feedback {
     status: string
     admin_reply: string | null
     admin_replied_at: string | null
+    user_viewed?: boolean
     created_at: string
 }
 
@@ -49,6 +51,30 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
 
     const [favorites, setFavorites] = useState<ProviderWithDetails[]>(initialFavorites)
     const [isLoading, setIsLoading] = useState(false)
+    const [feedbacks, setFeedbacks] = useState<Feedback[]>(userFeedbacks)
+
+    // Mark as read when opening notifications tab
+    useEffect(() => {
+        const markRead = async () => {
+            if (defaultTab === 'notifications') {
+                const unreadIds = feedbacks
+                    .filter(f => f.admin_reply && !f.user_viewed)
+                    .map(f => f.id)
+
+                if (unreadIds.length > 0) {
+                    await markFeedbacksAsViewed(unreadIds)
+                    // Update local state
+                    setFeedbacks(prev => prev.map(f =>
+                        unreadIds.includes(f.id) ? { ...f, user_viewed: true } : f
+                    ))
+                    router.refresh()
+                }
+            }
+        }
+        markRead()
+    }, [defaultTab, feedbacks])
+
+    const notificationCount = feedbacks.filter(f => f.admin_reply && !f.user_viewed).length
 
     // Profile form state
     const [fullName, setFullName] = useState(user?.user_metadata?.full_name || '')
@@ -253,9 +279,9 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
                                     >
                                         <div className={`p-2 rounded-lg ${defaultTab === 'notifications' ? 'bg-orange-100' : 'bg-gray-100'} relative`}>
                                             <Bell className={`h-4 w-4 ${defaultTab === 'notifications' ? 'text-[#FF5200]' : 'text-gray-500'}`} />
-                                            {unreadNotifications > 0 && (
+                                            {notificationCount > 0 && (
                                                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
-                                                    {unreadNotifications}
+                                                    {notificationCount}
                                                 </span>
                                             )}
                                         </div>
