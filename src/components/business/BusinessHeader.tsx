@@ -1,6 +1,6 @@
 'use client'
 
-import { Share2, Heart, Star, MapPin, Clock, CheckCircle2, Phone, MessageCircle, Mail, Globe, Tag, DollarSign, Instagram, Facebook, Twitter } from 'lucide-react'
+import { Share2, Heart, Star, MapPin, Clock, CheckCircle2, Phone, MessageCircle, Mail, Globe, Tag, DollarSign, Instagram, Facebook, Twitter, BadgeCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
@@ -105,6 +105,9 @@ export function BusinessHeader({ provider }: BusinessHeaderProps) {
     const isWorker = workerCategories.includes(provider.categories?.slug || '') ||
         workerCategories.includes(provider.categories?.name?.toLowerCase() || '')
 
+    // Get primary image or use a fallback
+    const primaryImage = provider.provider_images?.find((img: any) => img.is_primary)?.url || provider.provider_images?.[0]?.url
+
     return (
         <div className="bg-white pb-6">
             {/* Breadcrumb */}
@@ -119,17 +122,29 @@ export function BusinessHeader({ provider }: BusinessHeaderProps) {
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col items-start gap-4">
                     <div className="w-full">
-                        {/* Business Name */}
-                        <div className="flex items-center gap-2 mb-3 flex-wrap">
+                        {/* Profile Photo - Visible on Desktop/Tablet inside the header flow */}
+                        {primaryImage && (
+                            <div className="hidden md:block absolute right-0 top-0">
+                                {/* Positioning might need adjustment depending on layout, but sticking it next to name is safer inline */}
+                            </div>
+                        )}
+
+                        <div className="flex items-center gap-4 mb-3 flex-wrap">
+                            {/* Profile Image next to name */}
+                            {primaryImage && (
+                                <img
+                                    src={primaryImage}
+                                    alt={provider.business_name}
+                                    className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md mr-3"
+                                />
+                            )}
                             <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight tracking-tight">
                                 {provider.business_name}
                             </h1>
+
                             {provider.is_verified && isWorker && (
                                 <div className="ml-1.5 translate-y-[2px]" title="Verified Professional">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6">
-                                        <path d="M22.5 12.5C22.5 11.2 21.6 10.3 21.6 9C21.6 7.7 22.5 6.8 22.5 5.5C22.5 4.1 21.4 3 20 3C18.7 3 17.8 3.9 16.5 3.9C15.2 3.9 14.3 3 13 3C11.7 3 10.8 3.9 9.5 3.9C8.2 3.9 7.3 3 6 3C4.6 3 3.5 4.1 3.5 5.5C3.5 6.8 4.4 7.7 4.4 9C4.4 10.3 3.5 11.2 3.5 12.5C3.5 13.8 4.4 14.7 4.4 16C4.4 17.3 3.5 18.2 3.5 19.5C3.5 20.9 4.6 22 6 22C7.3 22 8.2 21.1 9.5 21.1C10.8 21.1 11.7 22 13 22C14.3 22 15.2 21.1 16.5 21.1C17.8 21.1 18.7 22 20 22C21.4 22 22.5 20.9 22.5 19.5C22.5 18.2 21.6 17.3 21.6 16C21.6 14.7 22.5 13.8 22.5 12.5Z" fill="#3897F0" />
-                                        <path d="M10 17L5 12L6.41 10.59L10 14.17L19.59 4.58L21 6L10 17Z" fill="white" />
-                                    </svg>
+                                    <BadgeCheck className="w-6 h-6 text-white fill-blue-500" />
                                 </div>
                             )}
                         </div>
@@ -298,6 +313,6 @@ export function BusinessHeader({ provider }: BusinessHeaderProps) {
                     </Button>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

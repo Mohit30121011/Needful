@@ -6,7 +6,6 @@ import { useParams, notFound } from 'next/navigation'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { BusinessHeader } from '@/components/business/BusinessHeader'
-import { PhotoGallery } from '@/components/business/PhotoGallery'
 import { BusinessTabs } from '@/components/business/BusinessTabs'
 import { StickyActionBar } from '@/components/business/StickyActionBar'
 import { EnquiryForm } from '@/components/listing/SidebarWidgets'
@@ -98,9 +97,7 @@ export default function BusinessDetailPage() {
         )
     }
 
-    // Map provider data to the shape expected by components (if they differ from DB)
-    // PhotoGallery expects "images" array with "url" property.
-    const galleryImages = provider.provider_images?.map(img => ({ url: img.url })) || []
+
 
     return (
         <div className="min-h-screen bg-white">
@@ -111,10 +108,7 @@ export default function BusinessDetailPage() {
                 {/* 1. Header Section */}
                 <BusinessHeader provider={provider} />
 
-                {/* 2. Photo Gallery */}
-                <div className="my-6">
-                    <PhotoGallery images={galleryImages} />
-                </div>
+
 
                 <div className="flex flex-col lg:flex-row gap-8 mt-8">
                     {/* 3. Main Content (Left Column) */}
@@ -144,7 +138,7 @@ export default function BusinessDetailPage() {
                                 </div>
                             </div>
 
-                            <EnquiryForm />
+
 
                             <div className="mt-6">
                                 <BusinessMapWrapper
