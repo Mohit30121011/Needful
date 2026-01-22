@@ -60,7 +60,7 @@ export default function FeedbackPage() {
 
     const fetchFeedbacks = async () => {
         try {
-            const { data, error } = await supabase
+            const { data, error } = await (supabase as any)
                 .from('feedbacks')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -95,7 +95,7 @@ export default function FeedbackPage() {
 
         setIsSubmitting(true)
         try {
-            const { error } = await supabase
+            const { error } = await (supabase as any)
                 .from('feedbacks')
                 .update({
                     admin_reply: replyText.trim(),
@@ -121,7 +121,7 @@ export default function FeedbackPage() {
         if (!confirm('Are you sure you want to delete this feedback?')) return
 
         try {
-            const { error } = await supabase
+            const { error } = await (supabase as any)
                 .from('feedbacks')
                 .delete()
                 .eq('id', feedbackId)
@@ -138,7 +138,7 @@ export default function FeedbackPage() {
 
     const handleMarkAsRead = async (feedbackId: string) => {
         try {
-            const { error } = await supabase
+            const { error } = await (supabase as any)
                 .from('feedbacks')
                 .update({ status: 'read' })
                 .eq('id', feedbackId)

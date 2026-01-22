@@ -27,11 +27,20 @@ export default async function ProfilePage() {
         .eq('user_id', user.id)
 
     // Fetch user's feedbacks (contact form submissions)
-    const { data: userFeedbacks } = await supabase
+    const { data: userFeedbacks } = await (supabase as any)
         .from('feedbacks')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
+
+    // Check if user is admin
+    const { data: userData } = await (supabase as any)
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
+    const isAdmin = userData?.role === 'admin'
 
     return (
         <ProfilePageContent
@@ -39,6 +48,7 @@ export default async function ProfilePage() {
             favorites={favorites}
             myBusiness={myBusiness as ProviderWithDetails[] | null}
             userFeedbacks={userFeedbacks || []}
+            isAdmin={isAdmin}
         />
     )
 }

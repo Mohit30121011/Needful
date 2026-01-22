@@ -18,6 +18,7 @@ import { toast } from 'sonner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import type { ProviderWithDetails } from '@/types/database'
 import { formatDistanceToNow } from 'date-fns'
+import { markFeedbacksAsViewed } from '@/app/actions/contact'
 
 interface Feedback {
     id: string
@@ -29,6 +30,7 @@ interface Feedback {
     status: string
     admin_reply: string | null
     admin_replied_at: string | null
+    user_viewed?: boolean
     created_at: string
 }
 
@@ -37,9 +39,10 @@ interface ProfilePageContentProps {
     user: any // Supabase user object
     myBusiness: ProviderWithDetails[] | null
     userFeedbacks?: Feedback[]
+    isAdmin?: boolean
 }
 
-export function ProfilePageContent({ favorites: initialFavorites, user, myBusiness, userFeedbacks = [] }: ProfilePageContentProps) {
+export function ProfilePageContent({ favorites: initialFavorites, user, myBusiness, userFeedbacks = [], isAdmin = false }: ProfilePageContentProps) {
     const router = useRouter()
     const searchParams = useSearchParams()
 
@@ -48,6 +51,30 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
 
     const [favorites, setFavorites] = useState<ProviderWithDetails[]>(initialFavorites)
     const [isLoading, setIsLoading] = useState(false)
+    const [feedbacks, setFeedbacks] = useState<Feedback[]>(userFeedbacks)
+
+    // Mark as read when opening notifications tab
+    useEffect(() => {
+        const markRead = async () => {
+            if (defaultTab === 'notifications') {
+                const unreadIds = feedbacks
+                    .filter(f => f.admin_reply && !f.user_viewed)
+                    .map(f => f.id)
+
+                if (unreadIds.length > 0) {
+                    await markFeedbacksAsViewed(unreadIds)
+                    // Update local state
+                    setFeedbacks(prev => prev.map(f =>
+                        unreadIds.includes(f.id) ? { ...f, user_viewed: true } : f
+                    ))
+                    router.refresh()
+                }
+            }
+        }
+        markRead()
+    }, [defaultTab, feedbacks])
+
+    const notificationCount = feedbacks.filter(f => f.admin_reply && !f.user_viewed).length
 
     // Profile form state
     const [fullName, setFullName] = useState(user?.user_metadata?.full_name || '')
@@ -252,9 +279,9 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
                                     >
                                         <div className={`p-2 rounded-lg ${defaultTab === 'notifications' ? 'bg-orange-100' : 'bg-gray-100'} relative`}>
                                             <Bell className={`h-4 w-4 ${defaultTab === 'notifications' ? 'text-[#FF5200]' : 'text-gray-500'}`} />
-                                            {unreadNotifications > 0 && (
+                                            {notificationCount > 0 && (
                                                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
-                                                    {unreadNotifications}
+                                                    {notificationCount}
                                                 </span>
                                             )}
                                         </div>
@@ -279,15 +306,18 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
                                         </div>
                                         Privacy & Security
                                     </button>
-                                    <button
-                                        onClick={() => router.push('/admin/dashboard')}
-                                        className="w-full text-left px-5 py-4 flex items-center gap-4 bg-[#FF5200] text-white hover:bg-[#E04800] transition-all border-l-4 border-[#FF5200] cursor-pointer"
-                                    >
-                                        <div className="p-2 rounded-lg bg-white/20">
-                                            <LayoutDashboard className="h-4 w-4 text-white" />
-                                        </div>
-                                        Admin Access
-                                    </button>
+                                    {/* Admin Access - Only visible to admins */}
+                                    {isAdmin && (
+                                        <button
+                                            onClick={() => router.push('/admin/dashboard')}
+                                            className="w-full text-left px-5 py-4 flex items-center gap-4 bg-[#FF5200] text-white hover:bg-[#E04800] transition-all border-l-4 border-[#FF5200] cursor-pointer"
+                                        >
+                                            <div className="p-2 rounded-lg bg-white/20">
+                                                <LayoutDashboard className="h-4 w-4 text-white" />
+                                            </div>
+                                            Admin Access
+                                        </button>
+                                    )}
                                 </div>
                                 <div className="h-px bg-gray-100"></div>
                                 <button
