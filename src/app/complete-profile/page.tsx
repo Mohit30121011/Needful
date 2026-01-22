@@ -11,11 +11,19 @@ import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import { createOrder, verifyPayment } from '@/app/actions/payment'
 
 const cities = [
     'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai',
     'Kolkata', 'Pune', 'Ahmedabad', 'Jaipur', 'Surat'
 ]
+
+// Add Razorpay types locally since @types/razorpay might not be installed
+declare global {
+    interface Window {
+        Razorpay: any;
+    }
+}
 
 export default function CompleteProfilePage() {
     const router = useRouter()
@@ -37,6 +45,16 @@ export default function CompleteProfilePage() {
     useEffect(() => {
         setMounted(true)
         checkUser()
+
+        // Load Razorpay Script
+        const script = document.createElement('script')
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+        script.async = true
+        document.body.appendChild(script)
+
+        return () => {
+            document.body.removeChild(script)
+        }
     }, [])
 
     const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
@@ -82,6 +100,129 @@ export default function CompleteProfilePage() {
             '-' + Math.floor(Math.random() * 1000)
     }
 
+    const handleBusinessRegistration = async () => {
+        try {
+            // 1. Create Order
+            const { orderId, amount, error } = await createOrder(5000) // 5000 RS
+
+            if (error || !orderId) {
+                toast.error('Failed to initiate payment')
+                setLoading(false)
+                return
+            }
+
+            // 2. Open Razorpay Modal
+            const options = {
+                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Use public env var if needed, or better fetch from server config
+                amount: amount,
+                currency: "INR",
+                name: "NeedFul Business",
+                description: "Business Registration Fee",
+                image: "/logo.png",
+                order_id: orderId,
+                handler: async function (response: any) {
+                    try {
+                        // 3. Verify Payment
+                        const verification = await verifyPayment(
+                            response.razorpay_order_id,
+                            response.razorpay_payment_id,
+                            response.razorpay_signature
+                        )
+
+                        if (verification.success) {
+                            // 4. Create Provider on Success
+                            await createProviderRecord()
+                        } else {
+                            toast.error('Payment verification failed')
+                            setLoading(false)
+                        }
+                    } catch (err) {
+                        console.error('Payment verification error:', err)
+                        toast.error('Payment verification failed')
+                        setLoading(false)
+                    }
+                },
+                prefill: {
+                    name: formData.name,
+                    email: user.email,
+                    contact: formData.phone
+                },
+                theme: {
+                    color: "#FF5200"
+                }
+            }
+
+            const razorpay = new window.Razorpay(options)
+            razorpay.open()
+
+            razorpay.on('payment.failed', function (response: any) {
+                toast.error('Payment failed: ' + response.error.description)
+                setLoading(false)
+            });
+
+        } catch (error) {
+            console.error('Payment initiation error:', error)
+            toast.error('Something went wrong with payment')
+            setLoading(false)
+        }
+    }
+
+    const createProviderRecord = async () => {
+        const supabase = createClient()
+        try {
+            // 1. Update User Profile
+            const { error: userError } = await supabase.auth.updateUser({
+                data: {
+                    full_name: formData.name,
+                    name: formData.name,
+                    phone: formData.phone,
+                    city: formData.city,
+                    profile_completed: true,
+                    business_name: formData.businessName,
+                    account_type: 'business',
+                    is_paid: true // Mark as paid
+                }
+            })
+
+            if (userError) throw userError
+
+            const slug = generateSlug(formData.businessName)
+
+            // Update user role
+            const { error: roleError } = await supabase
+                .from('users')
+                // @ts-ignore
+                .update({ role: 'provider' } as any)
+                .eq('id', user.id)
+
+            if (roleError) console.error('Error updating role:', roleError)
+
+            // Insert Provider
+            const { error: providerError } = await supabase
+                .from('providers')
+                // @ts-ignore
+                .insert({
+                    user_id: user.id,
+                    business_name: formData.businessName,
+                    slug: slug,
+                    city: formData.city,
+                    phone: formData.phone,
+                    email: user.email,
+                    is_available: true
+                } as any)
+
+            if (providerError) throw providerError
+
+            toast.success('Registration successful! Welcome partner.')
+            router.push('/')
+        } catch (error: any) {
+            console.error('Provider creation error:', error)
+            toast.error(error.message || 'Failed to finish registration')
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
@@ -97,60 +238,35 @@ export default function CompleteProfilePage() {
 
         setLoading(true)
 
-        const supabase = createClient()
-
-        try {
-            // 1. Update User Profile
-            const { error: userError } = await supabase.auth.updateUser({
-                data: {
-                    full_name: formData.name, // Ensure consistency with key names
-                    name: formData.name,     // Store as 'name' too for backup
-                    phone: formData.phone,
-                    city: formData.city,
-                    profile_completed: true,
-                    business_name: formData.accountType === 'business' ? formData.businessName : undefined,
-                    account_type: formData.accountType
-                }
-            })
-
-            if (userError) throw userError
-
-            // 2. If Business, Create Provider Record
-            if (formData.accountType === 'business') {
-                const slug = generateSlug(formData.businessName)
-
-                const { error: roleError } = await supabase
-                    .from('users')
-                    // @ts-ignore
-                    .update({ role: 'provider' } as any)
-                    .eq('id', user.id)
-
-                if (roleError) console.error('Error updating role:', roleError)
-
-                const { error: providerError } = await supabase
-                    .from('providers')
-                    // @ts-ignore
-                    .insert({
-                        user_id: user.id,
-                        business_name: formData.businessName,
-                        slug: slug,
-                        city: formData.city,
+        if (formData.accountType === 'business') {
+            // Handle Payment Flow for Business
+            await handleBusinessRegistration()
+        } else {
+            // Normal User Flow
+            const supabase = createClient()
+            try {
+                const { error: userError } = await supabase.auth.updateUser({
+                    data: {
+                        full_name: formData.name,
+                        name: formData.name,
                         phone: formData.phone,
-                        email: user.email,
-                        is_available: true
-                    } as any)
+                        city: formData.city,
+                        profile_completed: true,
+                        business_name: undefined,
+                        account_type: 'user'
+                    }
+                })
 
-                if (providerError) throw providerError
+                if (userError) throw userError
+
+                toast.success('Profile completed! Welcome to NeedFul.')
+                router.push('/')
+            } catch (error: any) {
+                console.error('Signup error:', error)
+                toast.error(error.message || 'Failed to update profile')
+            } finally {
+                setLoading(false)
             }
-
-            toast.success('Profile completed! Welcome to NeedFul.')
-            router.push('/')
-
-        } catch (error: any) {
-            console.error('Signup error:', error)
-            toast.error(error.message || 'Failed to update profile')
-        } finally {
-            setLoading(false)
         }
     }
 

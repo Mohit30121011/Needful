@@ -289,288 +289,368 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
                                     </button>
 
                                     <button
-                                        onClick={() => toast.info('Account Settings coming soon!')}
-                                        className="w-full text-left px-5 py-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent cursor-pointer"
+                                        onClick={() => router.push('/profile?tab=account')}
+                                        className={`w-full text-left px-5 py-4 flex items-center gap-4 transition-all border-l-4 cursor-pointer ${defaultTab === 'account' ? 'text-[#FF5200] bg-orange-50 border-[#FF5200]' : 'text-gray-700 hover:bg-gray-50 border-transparent'}`}
                                     >
-                                        <div className="p-2 rounded-lg bg-gray-100">
-                                            <Settings className="h-4 w-4 text-gray-500" />
+                                        <div className={`p-2 rounded-lg ${defaultTab === 'account' ? 'bg-orange-100' : 'bg-gray-100'}`}>
+                                            <Settings className={`h-4 w-4 ${defaultTab === 'account' ? 'text-[#FF5200]' : 'text-gray-500'}`} />
                                         </div>
                                         Account Settings
                                     </button>
                                     <button
-                                        onClick={() => toast.info('Privacy & Security settings coming soon!')}
-                                        className="w-full text-left px-5 py-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent cursor-pointer"
+                                        onClick={() => router.push('/profile?tab=privacy')}
+                                        className={`w-full text-left px-5 py-4 flex items-center gap-4 transition-all border-l-4 cursor-pointer ${defaultTab === 'privacy' ? 'text-[#FF5200] bg-orange-50 border-[#FF5200]' : 'text-gray-700 hover:bg-gray-50 border-transparent'}`}
                                     >
-                                        <div className="p-2 rounded-lg bg-gray-100">
-                                            <Shield className="h-4 w-4 text-gray-500" />
+                                        <div className={`p-2 rounded-lg ${defaultTab === 'privacy' ? 'bg-orange-100' : 'bg-gray-100'}`}>
+                                            <Shield className={`h-4 w-4 ${defaultTab === 'privacy' ? 'text-[#FF5200]' : 'text-gray-500'}`} />
                                         </div>
                                         Privacy & Security
                                     </button>
-                                    {/* Admin Access - Only visible to admins */}
-                                    {isAdmin && (
-                                        <button
-                                            onClick={() => router.push('/admin/dashboard')}
-                                            className="w-full text-left px-5 py-4 flex items-center gap-4 bg-[#FF5200] text-white hover:bg-[#E04800] transition-all border-l-4 border-[#FF5200] cursor-pointer"
-                                        >
-                                            <div className="p-2 rounded-lg bg-white/20">
-                                                <LayoutDashboard className="h-4 w-4 text-white" />
-                                            </div>
-                                            Admin Access
-                                        </button>
-                                    )}
-                                </div>
-                                <div className="h-px bg-gray-100"></div>
-                                <button
-                                    onClick={handleLogout}
-                                    className="w-full text-left px-5 py-4 flex items-center gap-4 text-red-600 hover:bg-red-50 transition-all cursor-pointer"
-                                >
-                                    <div className="p-2 rounded-lg bg-red-50">
-                                        <LogOut className="h-4 w-4 text-red-500" />
+                                    <div className="p-2 rounded-lg bg-gray-100">
+                                        <Shield className="h-4 w-4 text-gray-500" />
                                     </div>
-                                    Log Out
+                                    Privacy & Security
                                 </button>
+                                {/* Admin Access - Only visible to admins */}
+                                {isAdmin && (
+                                    <button
+                                        onClick={() => router.push('/admin/dashboard')}
+                                        className="w-full text-left px-5 py-4 flex items-center gap-4 bg-[#FF5200] text-white hover:bg-[#E04800] transition-all border-l-4 border-[#FF5200] cursor-pointer"
+                                    >
+                                        <div className="p-2 rounded-lg bg-white/20">
+                                            <LayoutDashboard className="h-4 w-4 text-white" />
+                                        </div>
+                                        Admin Access
+                                    </button>
+                                )}
                             </div>
+                            <div className="h-px bg-gray-100"></div>
+                            <button
+                                onClick={handleLogout}
+                                className="w-full text-left px-5 py-4 flex items-center gap-4 text-red-600 hover:bg-red-50 transition-all cursor-pointer"
+                            >
+                                <div className="p-2 rounded-lg bg-red-50">
+                                    <LogOut className="h-4 w-4 text-red-500" />
+                                </div>
+                                Log Out
+                            </button>
                         </div>
+                    </div>
 
-                        {/* Main Content */}
-                        <div className="flex-1 min-w-0">
-                            <Tabs value={defaultTab} className="w-full" onValueChange={(val) => router.push(`/profile?tab=${val}`)}>
-                                <TabsContent value="profile" className="mt-0 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                    <SectionHeading subtitle="Manage your personal details and preferences.">
-                                        Personal Information
-                                    </SectionHeading>
-                                    <Card className="border-0 shadow-lg shadow-gray-100/50 bg-white rounded-2xl">
-                                        <CardContent className="space-y-6 pt-6">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="name" className="text-sm font-semibold text-gray-700">Full Name</Label>
-                                                    <Input
-                                                        id="name"
-                                                        value={fullName}
-                                                        onChange={(e) => setFullName(e.target.value)}
-                                                        placeholder="Rahul Sharma"
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="email" className="text-sm font-semibold text-gray-700">Email Address</Label>
-                                                    <Input id="email" defaultValue={user?.email || ''} disabled readOnly className="bg-gray-100 cursor-not-allowed opacity-70" />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">Phone Number</Label>
-                                                    <Input
-                                                        id="phone"
-                                                        value={phone}
-                                                        onChange={(e) => setPhone(e.target.value)}
-                                                        placeholder="+91 98765 43210"
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="city" className="text-sm font-semibold text-gray-700">City</Label>
-                                                    <Input
-                                                        id="city"
-                                                        value={city}
-                                                        onChange={(e) => setCity(e.target.value)}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="pt-4 flex justify-end border-t border-gray-100">
-                                                <Button
-                                                    onClick={handleSaveProfile}
-                                                    disabled={isSaving}
-                                                    className="bg-[#FF5200] hover:bg-[#E04800] text-white px-8 h-11 font-semibold shadow-lg shadow-orange-500/20 disabled:opacity-50"
-                                                >
-                                                    {isSaving ? 'Saving...' : 'Save Changes'}
-                                                </Button>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                </TabsContent>
-
-                                <TabsContent value="business" className="mt-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                    <SectionHeading subtitle="Manage your business listings and services.">
-                                        My Business Listings
-                                    </SectionHeading>
-
-                                    {myBusiness && myBusiness.length > 0 ? (
+                    {/* Main Content */}
+                    <div className="flex-1 min-w-0">
+                        <Tabs value={defaultTab} className="w-full" onValueChange={(val) => router.push(`/profile?tab=${val}`)}>
+                            <TabsContent value="profile" className="mt-0 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <SectionHeading subtitle="Manage your personal details and preferences.">
+                                    Personal Information
+                                </SectionHeading>
+                                <Card className="border-0 shadow-lg shadow-gray-100/50 bg-white rounded-2xl">
+                                    <CardContent className="space-y-6 pt-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            {myBusiness.map(provider => (
-                                                <ServiceCard
-                                                    key={provider.id}
-                                                    provider={provider}
-                                                    isSaved={false} // Can't save your own
-                                                    isOwner={true}
+                                            <div className="space-y-2">
+                                                <Label htmlFor="name" className="text-sm font-semibold text-gray-700">Full Name</Label>
+                                                <Input
+                                                    id="name"
+                                                    value={fullName}
+                                                    onChange={(e) => setFullName(e.target.value)}
+                                                    placeholder="Rahul Sharma"
                                                 />
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <Card className="border-0 shadow-sm py-16 text-center">
-                                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                <Store className="h-8 w-8 text-gray-400" />
                                             </div>
-                                            <h3 className="text-lg font-bold text-gray-900 mb-2">No business listings found</h3>
-                                            <p className="text-gray-500 mb-6 max-w-sm mx-auto">
-                                                If you are a service provider, complete your profile to get listed.
-                                            </p>
-                                        </Card>
-                                    )}
-                                </TabsContent>
-
-                                <TabsContent value="favorites" className="mt-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                    <SectionHeading subtitle="Manage your saved service providers.">
-                                        My Favorites
-                                    </SectionHeading>
-
-                                    {favorites.length > 0 ? (
-                                        <div className="space-y-8">
-                                            {/* Logic to split favorites */}
-                                            {(() => {
-                                                const workerCategories = ['plumbers', 'electricians', 'carpenters', 'painters', 'ac-repair', 'cleaning', 'salon', 'massage']
-                                                const workers = favorites.filter(p => workerCategories.includes(p.categories?.slug || ''))
-                                                const businesses = favorites.filter(p => !workerCategories.includes(p.categories?.slug || ''))
-
-                                                return (
-                                                    <>
-                                                        {workers.length > 0 && (
-                                                            <div>
-                                                                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                                                    <Briefcase className="w-5 h-5 text-[#FF5200]" />
-                                                                    Your Favorite Workers
-                                                                </h3>
-                                                                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                                                                    {workers.map(provider => (
-                                                                        <WorkerCard
-                                                                            key={provider.id}
-                                                                            provider={provider}
-                                                                            isSaved={true}
-                                                                            onSave={() => handleUnfavorite(provider.id)}
-                                                                            // Generate mock jobs done count (stable per provider ID)
-                                                                            jobsDone={50 + (provider.id.charCodeAt(0) % 450)}
-                                                                        />
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {businesses.length > 0 && (
-                                                            <div>
-                                                                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                                                    <Building2 className="w-5 h-5 text-[#FF5200]" />
-                                                                    Favorite Businesses
-                                                                </h3>
-                                                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                                                    {businesses.map(provider => (
-                                                                        <ServiceCard
-                                                                            key={provider.id}
-                                                                            provider={provider}
-                                                                            isSaved={true}
-                                                                            onSave={() => handleUnfavorite(provider.id)}
-                                                                        />
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                    </>
-                                                )
-                                            })()}
-                                        </div>
-                                    ) : (
-                                        <Card className="border-0 shadow-sm py-16 text-center">
-                                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                <Heart className="h-8 w-8 text-gray-400" />
+                                            <div className="space-y-2">
+                                                <Label htmlFor="email" className="text-sm font-semibold text-gray-700">Email Address</Label>
+                                                <Input id="email" defaultValue={user?.email || ''} disabled readOnly className="bg-gray-100 cursor-not-allowed opacity-70" />
                                             </div>
-                                            <h3 className="text-lg font-bold text-gray-900 mb-2">No favorites yet</h3>
-                                            <p className="text-gray-500 mb-6 max-w-sm mx-auto">
-                                                Start exploring services and click the heart icon to save them here for quick access.
-                                            </p>
+                                            <div className="space-y-2">
+                                                <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">Phone Number</Label>
+                                                <Input
+                                                    id="phone"
+                                                    value={phone}
+                                                    onChange={(e) => setPhone(e.target.value)}
+                                                    placeholder="+91 98765 43210"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label htmlFor="city" className="text-sm font-semibold text-gray-700">City</Label>
+                                                <Input
+                                                    id="city"
+                                                    value={city}
+                                                    onChange={(e) => setCity(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="pt-4 flex justify-end border-t border-gray-100">
                                             <Button
-                                                onClick={() => router.push('/search')}
-                                                className="bg-[#FF5200] hover:bg-[#E04800] text-white px-8"
+                                                onClick={handleSaveProfile}
+                                                disabled={isSaving}
+                                                className="bg-[#FF5200] hover:bg-[#E04800] text-white px-8 h-11 font-semibold shadow-lg shadow-orange-500/20 disabled:opacity-50"
                                             >
-                                                Explore Services
+                                                {isSaving ? 'Saving...' : 'Save Changes'}
                                             </Button>
-                                        </Card>
-                                    )}
-                                </TabsContent>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
 
-                                {/* Notifications Tab */}
-                                <TabsContent value="notifications" className="mt-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                    <SectionHeading subtitle="View your submitted feedback and admin responses.">
-                                        Notifications
-                                    </SectionHeading>
+                            <TabsContent value="business" className="mt-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <SectionHeading subtitle="Manage your business listings and services.">
+                                    My Business Listings
+                                </SectionHeading>
 
-                                    {userFeedbacks.length > 0 ? (
-                                        <div className="space-y-4">
-                                            {userFeedbacks.map((feedback) => (
-                                                <Card key={feedback.id} className="border-0 shadow-lg shadow-gray-100/50 bg-white rounded-2xl overflow-hidden">
-                                                    <CardContent className="p-6">
-                                                        <div className="flex items-start gap-4">
-                                                            <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                                                <MessageSquare className="w-5 h-5 text-[#FF5200]" />
-                                                            </div>
-                                                            <div className="flex-1">
-                                                                <div className="flex items-center gap-2 mb-2 flex-wrap">
-                                                                    <h3 className="font-semibold text-gray-900">{feedback.subject}</h3>
-                                                                    {getStatusBadge(feedback.status, !!feedback.admin_reply)}
-                                                                </div>
-                                                                <p className="text-sm text-gray-600 mb-3">{feedback.message}</p>
-                                                                <p className="text-xs text-gray-400 flex items-center gap-1">
-                                                                    <Clock className="w-3 h-3" />
-                                                                    Submitted {formatDistanceToNow(new Date(feedback.created_at), { addSuffix: true })}
-                                                                </p>
+                                {myBusiness && myBusiness.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {myBusiness.map(provider => (
+                                            <ServiceCard
+                                                key={provider.id}
+                                                provider={provider}
+                                                isSaved={false} // Can't save your own
+                                                isOwner={true}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <Card className="border-0 shadow-sm py-16 text-center">
+                                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <Store className="h-8 w-8 text-gray-400" />
+                                        </div>
+                                        <h3 className="text-lg font-bold text-gray-900 mb-2">No business listings found</h3>
+                                        <p className="text-gray-500 mb-6 max-w-sm mx-auto">
+                                            If you are a service provider, complete your profile to get listed.
+                                        </p>
+                                    </Card>
+                                )}
+                            </TabsContent>
 
-                                                                {/* Admin Reply Section */}
-                                                                {feedback.admin_reply && (
-                                                                    <div className="mt-4 p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-100">
-                                                                        <div className="flex items-center gap-2 mb-2">
-                                                                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                                                                                <Reply className="w-3 h-3 text-white" />
-                                                                            </div>
-                                                                            <span className="text-sm font-semibold text-green-700">Admin Response</span>
-                                                                        </div>
-                                                                        <p className="text-sm text-green-900">{feedback.admin_reply}</p>
-                                                                        {feedback.admin_replied_at && (
-                                                                            <p className="text-xs text-green-600 mt-2">
-                                                                                Replied {formatDistanceToNow(new Date(feedback.admin_replied_at), { addSuffix: true })}
-                                                                            </p>
-                                                                        )}
-                                                                    </div>
-                                                                )}
+                            <TabsContent value="favorites" className="mt-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <SectionHeading subtitle="Manage your saved service providers.">
+                                    My Favorites
+                                </SectionHeading>
 
-                                                                {/* Pending Response Message */}
-                                                                {!feedback.admin_reply && feedback.status === 'pending' && (
-                                                                    <div className="mt-4 p-3 bg-yellow-50 rounded-xl border border-yellow-100">
-                                                                        <p className="text-sm text-yellow-700 flex items-center gap-2">
-                                                                            <Clock className="w-4 h-4" />
-                                                                            Awaiting response from admin
-                                                                        </p>
-                                                                    </div>
-                                                                )}
+                                {favorites.length > 0 ? (
+                                    <div className="space-y-8">
+                                        {/* Logic to split favorites */}
+                                        {(() => {
+                                            const workerCategories = ['plumbers', 'electricians', 'carpenters', 'painters', 'ac-repair', 'cleaning', 'salon', 'massage']
+                                            const workers = favorites.filter(p => workerCategories.includes(p.categories?.slug || ''))
+                                            const businesses = favorites.filter(p => !workerCategories.includes(p.categories?.slug || ''))
+
+                                            return (
+                                                <>
+                                                    {workers.length > 0 && (
+                                                        <div>
+                                                            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                                                <Briefcase className="w-5 h-5 text-[#FF5200]" />
+                                                                Your Favorite Workers
+                                                            </h3>
+                                                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                                                                {workers.map(provider => (
+                                                                    <WorkerCard
+                                                                        key={provider.id}
+                                                                        provider={provider}
+                                                                        isSaved={true}
+                                                                        onSave={() => handleUnfavorite(provider.id)}
+                                                                        // Generate mock jobs done count (stable per provider ID)
+                                                                        jobsDone={50 + (provider.id.charCodeAt(0) % 450)}
+                                                                    />
+                                                                ))}
                                                             </div>
                                                         </div>
-                                                    </CardContent>
-                                                </Card>
-                                            ))}
+                                                    )}
+
+                                                    {businesses.length > 0 && (
+                                                        <div>
+                                                            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                                                <Building2 className="w-5 h-5 text-[#FF5200]" />
+                                                                Favorite Businesses
+                                                            </h3>
+                                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                                                {businesses.map(provider => (
+                                                                    <ServiceCard
+                                                                        key={provider.id}
+                                                                        provider={provider}
+                                                                        isSaved={true}
+                                                                        onSave={() => handleUnfavorite(provider.id)}
+                                                                    />
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </>
+                                            )
+                                        })()}
+                                    </div>
+                                ) : (
+                                    <Card className="border-0 shadow-sm py-16 text-center">
+                                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <Heart className="h-8 w-8 text-gray-400" />
                                         </div>
-                                    ) : (
-                                        <Card className="border-0 shadow-sm py-16 text-center">
-                                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                <Bell className="h-8 w-8 text-gray-400" />
+                                        <h3 className="text-lg font-bold text-gray-900 mb-2">No favorites yet</h3>
+                                        <p className="text-gray-500 mb-6 max-w-sm mx-auto">
+                                            Start exploring services and click the heart icon to save them here for quick access.
+                                        </p>
+                                        <Button
+                                            onClick={() => router.push('/search')}
+                                            className="bg-[#FF5200] hover:bg-[#E04800] text-white px-8"
+                                        >
+                                            Explore Services
+                                        </Button>
+                                    </Card>
+                                )}
+                            </TabsContent>
+
+                            {/* Notifications Tab */}
+                            <TabsContent value="notifications" className="mt-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <SectionHeading subtitle="View your submitted feedback and admin responses.">
+                                    Notifications
+                                </SectionHeading>
+
+                                {userFeedbacks.length > 0 ? (
+                                    <div className="space-y-4">
+                                        {userFeedbacks.map((feedback) => (
+                                            <Card key={feedback.id} className="border-0 shadow-lg shadow-gray-100/50 bg-white rounded-2xl overflow-hidden">
+                                                <CardContent className="p-6">
+                                                    <div className="flex items-start gap-4">
+                                                        <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                            <MessageSquare className="w-5 h-5 text-[#FF5200]" />
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <div className="flex items-center gap-2 mb-2 flex-wrap">
+                                                                <h3 className="font-semibold text-gray-900">{feedback.subject}</h3>
+                                                                {getStatusBadge(feedback.status, !!feedback.admin_reply)}
+                                                            </div>
+                                                            <p className="text-sm text-gray-600 mb-3">{feedback.message}</p>
+                                                            <p className="text-xs text-gray-400 flex items-center gap-1">
+                                                                <Clock className="w-3 h-3" />
+                                                                Submitted {formatDistanceToNow(new Date(feedback.created_at), { addSuffix: true })}
+                                                            </p>
+
+                                                            {/* Admin Reply Section */}
+                                                            {feedback.admin_reply && (
+                                                                <div className="mt-4 p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-100">
+                                                                    <div className="flex items-center gap-2 mb-2">
+                                                                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                                                            <Reply className="w-3 h-3 text-white" />
+                                                                        </div>
+                                                                        <span className="text-sm font-semibold text-green-700">Admin Response</span>
+                                                                    </div>
+                                                                    <p className="text-sm text-green-900">{feedback.admin_reply}</p>
+                                                                    {feedback.admin_replied_at && (
+                                                                        <p className="text-xs text-green-600 mt-2">
+                                                                            Replied {formatDistanceToNow(new Date(feedback.admin_replied_at), { addSuffix: true })}
+                                                                        </p>
+                                                                    )}
+                                                                </div>
+                                                            )}
+
+                                                            {/* Pending Response Message */}
+                                                            {!feedback.admin_reply && feedback.status === 'pending' && (
+                                                                <div className="mt-4 p-3 bg-yellow-50 rounded-xl border border-yellow-100">
+                                                                    <p className="text-sm text-yellow-700 flex items-center gap-2">
+                                                                        <Clock className="w-4 h-4" />
+                                                                        Awaiting response from admin
+                                                                    </p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <Card className="border-0 shadow-sm py-16 text-center">
+                                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <Bell className="h-8 w-8 text-gray-400" />
+                                        </div>
+                                        <h3 className="text-lg font-bold text-gray-900 mb-2">No notifications yet</h3>
+                                        <p className="text-gray-500 mb-6 max-w-sm mx-auto">
+                                            When you submit feedback through our contact form, you'll see responses here.
+                                        </p>
+                                        <Button
+                                            onClick={() => router.push('/contact')}
+                                            className="bg-[#FF5200] hover:bg-[#E04800] text-white px-8"
+                                        >
+                                            Contact Us
+                                        </Button>
+                                    </Card>
+                                )}
+                            </TabsContent>
+
+                            {/* Account Settings Tab */}
+                            <TabsContent value="account" className="mt-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <SectionHeading subtitle="Manage your account preferences and security.">
+                                    Account Settings
+                                </SectionHeading>
+                                <Card className="border-0 shadow-lg shadow-gray-100/50 bg-white rounded-2xl">
+                                    <CardContent className="space-y-6 pt-6">
+                                        <div className="space-y-4">
+                                            <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Change Password</h3>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="current-password">Current Password</Label>
+                                                    <Input id="current-password" type="password" placeholder="••••••••" />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="new-password">New Password</Label>
+                                                    <Input id="new-password" type="password" placeholder="••••••••" />
+                                                </div>
                                             </div>
-                                            <h3 className="text-lg font-bold text-gray-900 mb-2">No notifications yet</h3>
-                                            <p className="text-gray-500 mb-6 max-w-sm mx-auto">
-                                                When you submit feedback through our contact form, you'll see responses here.
-                                            </p>
-                                            <Button
-                                                onClick={() => router.push('/contact')}
-                                                className="bg-[#FF5200] hover:bg-[#E04800] text-white px-8"
-                                            >
-                                                Contact Us
-                                            </Button>
-                                        </Card>
-                                    )}
-                                </TabsContent>
-                            </Tabs>
-                        </div>
+                                            <div className="flex justify-end">
+                                                <Button variant="outline" onClick={() => toast.success('Password updated!')}>Update Password</Button>
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-6 border-t">
+                                            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-red-600">Danger Zone</h3>
+                                            <div className="p-4 bg-red-50 rounded-xl border border-red-100 flex items-center justify-between">
+                                                <div>
+                                                    <p className="font-medium text-red-900">Delete Account</p>
+                                                    <p className="text-sm text-red-700">Permanently remove your account and all data.</p>
+                                                </div>
+                                                <Button variant="destructive" onClick={() => toast.error('Please contact support to delete account')}>Delete</Button>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            {/* Privacy Tab */}
+                            <TabsContent value="privacy" className="mt-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <SectionHeading subtitle="Control your privacy and data settings.">
+                                    Privacy & Security
+                                </SectionHeading>
+                                <Card className="border-0 shadow-lg shadow-gray-100/50 bg-white rounded-2xl">
+                                    <CardContent className="space-y-6 pt-6">
+                                        <div className="space-y-4">
+                                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                                                <div>
+                                                    <p className="font-semibold text-gray-900">Profile Visibility</p>
+                                                    <p className="text-sm text-gray-500">Make your profile visible to other users</p>
+                                                </div>
+                                                <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-orange-500 cursor-pointer">
+                                                    <span className="translate-x-6 inline-block h-4 w-4 rounded-full bg-white transition" />
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                                                <div>
+                                                    <p className="font-semibold text-gray-900">Two-Factor Authentication</p>
+                                                    <p className="text-sm text-gray-500">Add an extra layer of security</p>
+                                                </div>
+                                                <Button variant="outline" size="sm" onClick={() => toast.info('2FA Setup coming soon')}>Setup</Button>
+                                            </div>
+                                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                                                <div>
+                                                    <p className="font-semibold text-gray-900">Data Sharing</p>
+                                                    <p className="text-sm text-gray-500">Allow sharing usage data for improvements</p>
+                                                </div>
+                                                <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 cursor-pointer">
+                                                    <span className="translate-x-1 inline-block h-4 w-4 rounded-full bg-white transition" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+                        </Tabs>
                     </div>
                 </div>
             </main>
