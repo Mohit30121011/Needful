@@ -6,27 +6,58 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { CheckCircle2, Loader2, Calendar, Clock, User, Sparkles, X } from 'lucide-react'
+import { CheckCircle2, Loader2, Calendar, Clock, User, Sparkles, X, Mail } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface BookingModalProps {
     isOpen: boolean
     onClose: () => void
     businessName: string
+    providerId?: string
 }
 
-export function BookingModal({ isOpen, onClose, businessName }: BookingModalProps) {
+export function BookingModal({ isOpen, onClose, businessName, providerId }: BookingModalProps) {
     const [step, setStep] = useState<'form' | 'success'>('form')
     const [isLoading, setIsLoading] = useState(false)
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setIsLoading(true)
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500))
+        const formData = new FormData(e.currentTarget)
+        const data = {
+            businessName,
+            providerId,
+            date: formData.get('date'),
+            time: formData.get('time'),
+            service: formData.get('service'),
+            name: formData.get('name'),
+            email: formData.get('email'),
+            mobile: formData.get('mobile'),
+        }
 
-        setIsLoading(false)
-        setStep('success')
+        try {
+            const response = await fetch('/api/booking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+
+            const result = await response.json()
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to submit booking')
+            }
+
+            setStep('success')
+        } catch (error) {
+            console.error('Booking error:', error)
+            toast.error('Failed to request booking. Please try again.')
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -69,28 +100,36 @@ export function BookingModal({ isOpen, onClose, businessName }: BookingModalProp
                                         <Label htmlFor="date">Date</Label>
                                         <div className="relative">
                                             <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                            <Input id="date" required type="date" className="pl-10 rounded-xl h-11 bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
+                                            <Input name="date" id="date" required type="date" className="pl-10 rounded-xl h-11 bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="time">Time</Label>
                                         <div className="relative">
                                             <Clock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                            <Input id="time" required type="time" className="pl-10 rounded-xl h-11 bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
+                                            <Input name="time" id="time" required type="time" className="pl-10 rounded-xl h-11 bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
                                     <Label htmlFor="service">Service Type</Label>
-                                    <Input id="service" required placeholder="e.g. Deep Cleaning, Repair..." className="rounded-xl h-11 bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
+                                    <Input name="service" id="service" required placeholder="e.g. Deep Cleaning, Repair..." className="rounded-xl h-11 bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
                                 </div>
 
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Your Name</Label>
                                     <div className="relative">
                                         <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                                        <Input id="name" required placeholder="Enter full name" className="pl-10 rounded-xl h-11 bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
+                                        <Input name="name" id="name" required placeholder="Enter full name" className="pl-10 rounded-xl h-11 bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="email">Email Address</Label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                                        <Input name="email" id="email" required type="email" placeholder="john@example.com" className="pl-10 rounded-xl h-11 bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
                                     </div>
                                 </div>
 
@@ -100,7 +139,7 @@ export function BookingModal({ isOpen, onClose, businessName }: BookingModalProp
                                         <div className="flex items-center justify-center px-3 border border-gray-200 bg-gray-50 rounded-xl text-sm font-medium text-gray-600">
                                             +91
                                         </div>
-                                        <Input id="mobile" required type="tel" placeholder="98765 43210" className="rounded-xl h-11 bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
+                                        <Input name="mobile" id="mobile" required type="tel" placeholder="98765 43210" className="rounded-xl h-11 bg-gray-50/50 border-gray-200 focus:bg-white transition-all" />
                                     </div>
                                 </div>
 
@@ -112,7 +151,7 @@ export function BookingModal({ isOpen, onClose, businessName }: BookingModalProp
                                     {isLoading ? (
                                         <>
                                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                            Checking Slot...
+                                            Requesting...
                                         </>
                                     ) : (
                                         <>
@@ -134,7 +173,7 @@ export function BookingModal({ isOpen, onClose, businessName }: BookingModalProp
                             </div>
                             <h3 className="text-2xl font-bold text-gray-900 mb-2">Booking Requested!</h3>
                             <p className="text-gray-500 mb-8">
-                                We have received your request for <strong>{businessName}</strong>. Our team will call you shortly to confirm the slot.
+                                We have received your request for <strong>{businessName}</strong>. A confirmation email has been sent to your email address.
                             </p>
                             <Button
                                 onClick={onClose}
