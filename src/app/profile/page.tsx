@@ -33,12 +33,22 @@ export default async function ProfilePage() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
 
+    // Check if user is admin
+    const { data: userData } = await (supabase as any)
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
+    const isAdmin = userData?.role === 'admin'
+
     return (
         <ProfilePageContent
             user={user}
             favorites={favorites}
             myBusiness={myBusiness as ProviderWithDetails[] | null}
             userFeedbacks={userFeedbacks || []}
+            isAdmin={isAdmin}
         />
     )
 }

@@ -317,13 +317,6 @@ export default function CompleteProfilePage() {
                             )}
                         </Button>
                     </form>
-
-                    {/* Skip link */}
-                    <div className="text-center mt-4">
-                        <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
-                            Skip for now
-                        </Link>
-                    </div>
                 </div>
             </div>
         </div>

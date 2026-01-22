@@ -37,9 +37,10 @@ interface ProfilePageContentProps {
     user: any // Supabase user object
     myBusiness: ProviderWithDetails[] | null
     userFeedbacks?: Feedback[]
+    isAdmin?: boolean
 }
 
-export function ProfilePageContent({ favorites: initialFavorites, user, myBusiness, userFeedbacks = [] }: ProfilePageContentProps) {
+export function ProfilePageContent({ favorites: initialFavorites, user, myBusiness, userFeedbacks = [], isAdmin = false }: ProfilePageContentProps) {
     const router = useRouter()
     const searchParams = useSearchParams()
 
@@ -279,15 +280,18 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
                                         </div>
                                         Privacy & Security
                                     </button>
-                                    <button
-                                        onClick={() => router.push('/admin/dashboard')}
-                                        className="w-full text-left px-5 py-4 flex items-center gap-4 bg-[#FF5200] text-white hover:bg-[#E04800] transition-all border-l-4 border-[#FF5200] cursor-pointer"
-                                    >
-                                        <div className="p-2 rounded-lg bg-white/20">
-                                            <LayoutDashboard className="h-4 w-4 text-white" />
-                                        </div>
-                                        Admin Access
-                                    </button>
+                                    {/* Admin Access - Only visible to admins */}
+                                    {isAdmin && (
+                                        <button
+                                            onClick={() => router.push('/admin/dashboard')}
+                                            className="w-full text-left px-5 py-4 flex items-center gap-4 bg-[#FF5200] text-white hover:bg-[#E04800] transition-all border-l-4 border-[#FF5200] cursor-pointer"
+                                        >
+                                            <div className="p-2 rounded-lg bg-white/20">
+                                                <LayoutDashboard className="h-4 w-4 text-white" />
+                                            </div>
+                                            Admin Access
+                                        </button>
+                                    )}
                                 </div>
                                 <div className="h-px bg-gray-100"></div>
                                 <button
