@@ -33,7 +33,7 @@ export default function ContactPage() {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                             {/* Contact Info Cards */}
                             <div className="space-y-6">
-                                <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+                                <div className="bg-white p-8 rounded-3xl border border-gray-100 transition-all">
                                     <div className="w-12 h-12 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center mb-6">
                                         <Mail className="w-6 h-6" />
                                     </div>
@@ -42,7 +42,7 @@ export default function ContactPage() {
                                     <a href="mailto:hello@needful.com" className="text-[#FF5200] font-bold hover:underline">hello@needful.com</a>
                                 </div>
 
-                                <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+                                <div className="bg-white p-8 rounded-3xl border border-gray-100 transition-all">
                                     <div className="w-12 h-12 bg-green-50 text-green-500 rounded-2xl flex items-center justify-center mb-6">
                                         <Phone className="w-6 h-6" />
                                     </div>
@@ -51,7 +51,7 @@ export default function ContactPage() {
                                     <a href="tel:+1234567890" className="text-[#FF5200] font-bold hover:underline">+91 98765 43210</a>
                                 </div>
 
-                                <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+                                <div className="bg-white p-8 rounded-3xl border border-gray-100 transition-all">
                                     <div className="w-12 h-12 bg-purple-50 text-purple-500 rounded-2xl flex items-center justify-center mb-6">
                                         <MapPin className="w-6 h-6" />
                                     </div>
