@@ -649,6 +649,7 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
                             </Tabs>
                         </div>
                     </div>
+                </div>
             </main>
             <Footer />
         </div>
