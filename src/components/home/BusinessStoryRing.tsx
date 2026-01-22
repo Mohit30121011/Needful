@@ -66,6 +66,7 @@ export function BusinessStoryRing({
                             src={providerLogo}
                             alt={providerName}
                             fill
+                            unoptimized
                             className="object-cover"
                             onError={() => setImageError(true)}
                             sizes="(max-width: 768px) 80px, 96px"

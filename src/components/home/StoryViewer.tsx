@@ -223,6 +223,7 @@ export function StoryViewer({ storyGroup, onClose }: StoryViewerProps) {
                             src={currentStory.media_url}
                             alt={currentStory.caption || 'Story'}
                             fill
+                            unoptimized
                             className="object-contain"
                             priority
                         />
