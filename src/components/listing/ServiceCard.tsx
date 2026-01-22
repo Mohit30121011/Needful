@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { MapPin, Star, MoreHorizontal, CheckCircle, Heart, Phone, Send, PhoneCall, ImageIcon, Zap, Edit, Trash2, BarChart3 } from 'lucide-react'
+import { MapPin, Star, MoreHorizontal, CheckCircle, Heart, Phone, Send, PhoneCall, ImageIcon, Zap, Edit, Trash2, BarChart3, MessageCircle } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { RatingBadge } from '@/components/shared/RatingStars'
