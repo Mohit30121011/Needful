@@ -164,6 +164,7 @@ export default function BusinessDetailPage() {
                 isOpen={isBookingOpen}
                 onClose={() => setIsBookingOpen(false)}
                 businessName={provider.business_name}
+                providerId={provider.id}
             />
             <Footer />
         </div>
