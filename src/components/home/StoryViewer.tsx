@@ -28,7 +28,7 @@ export function StoryViewer({ storyGroup, onClose }: StoryViewerProps) {
     const [isPaused, setIsPaused] = useState(false)
     const [isMuted, setIsMuted] = useState(true)
     const videoRef = useRef<HTMLVideoElement>(null)
-    const progressIntervalRef = useRef<NodeJS.Timeout>()
+    const progressIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
     const recordView = useRecordStoryView()
 
     const currentStory = storyGroup.stories[currentStoryIndex]
