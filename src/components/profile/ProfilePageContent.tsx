@@ -9,21 +9,37 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { ServiceCard } from '@/components/listing/ServiceCard'
 import { WorkerCard } from '@/components/listing/WorkerCard'
-import { User, LogOut, Heart, Settings, Shield, Briefcase, Building2, Store } from 'lucide-react'
+import { User, LogOut, Heart, Settings, Shield, Briefcase, Building2, Store, Bell, MessageSquare, CheckCircle, Clock, Reply } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import type { ProviderWithDetails } from '@/types/database'
+import { formatDistanceToNow } from 'date-fns'
+
+interface Feedback {
+    id: string
+    name: string
+    email: string
+    subject: string
+    message: string
+    type: string
+    status: string
+    admin_reply: string | null
+    admin_replied_at: string | null
+    created_at: string
+}
 
 interface ProfilePageContentProps {
     favorites: ProviderWithDetails[]
     user: any // Supabase user object
     myBusiness: ProviderWithDetails[] | null
+    userFeedbacks?: Feedback[]
 }
 
-export function ProfilePageContent({ favorites: initialFavorites, user, myBusiness }: ProfilePageContentProps) {
+export function ProfilePageContent({ favorites: initialFavorites, user, myBusiness, userFeedbacks = [] }: ProfilePageContentProps) {
     const router = useRouter()
     const searchParams = useSearchParams()
 
@@ -40,6 +56,9 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
     const [isSaving, setIsSaving] = useState(false)
 
     const isProfileIncomplete = !user?.user_metadata?.profile_completed
+
+    // Count unread notifications (feedbacks with admin replies that might be new)
+    const unreadNotifications = userFeedbacks.filter(f => f.admin_reply).length
 
     // Handle profile save
     const handleSaveProfile = async () => {
@@ -79,6 +98,18 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
     const handleUnfavorite = (providerId: string) => {
         // Optimistically remove from list
         setFavorites(prev => prev.filter(p => p.id !== providerId))
+    }
+
+    const getStatusBadge = (status: string, hasReply: boolean) => {
+        if (hasReply) {
+            return <Badge className="bg-green-50 text-green-700 border-green-200">Replied</Badge>
+        }
+        switch (status) {
+            case 'resolved': return <Badge className="bg-blue-50 text-blue-700 border-blue-200">Resolved</Badge>
+            case 'read': return <Badge className="bg-gray-50 text-gray-700 border-gray-200">Read</Badge>
+            case 'pending': return <Badge className="bg-yellow-50 text-yellow-700 border-yellow-200">Pending</Badge>
+            default: return <Badge className="bg-gray-50 text-gray-700 border-gray-200">{status}</Badge>
+        }
     }
 
     return (
@@ -213,6 +244,23 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
                                         </div>
                                         My Favorites
                                     </button>
+
+                                    {/* Notifications Tab */}
+                                    <button
+                                        onClick={() => router.push('/profile?tab=notifications')}
+                                        className={`w-full text-left px-5 py-4 flex items-center gap-4 transition-all cursor-pointer ${defaultTab === 'notifications' ? 'text-[#FF5200] bg-orange-50 border-l-4 border-[#FF5200]' : 'text-gray-700 hover:bg-gray-50 border-l-4 border-transparent'}`}
+                                    >
+                                        <div className={`p-2 rounded-lg ${defaultTab === 'notifications' ? 'bg-orange-100' : 'bg-gray-100'} relative`}>
+                                            <Bell className={`h-4 w-4 ${defaultTab === 'notifications' ? 'text-[#FF5200]' : 'text-gray-500'}`} />
+                                            {unreadNotifications > 0 && (
+                                                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+                                                    {unreadNotifications}
+                                                </span>
+                                            )}
+                                        </div>
+                                        Notifications
+                                    </button>
+
                                     <button
                                         onClick={() => toast.info('Account Settings coming soon!')}
                                         className="w-full text-left px-5 py-4 flex items-center gap-4 text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent cursor-pointer"
@@ -400,6 +448,84 @@ export function ProfilePageContent({ favorites: initialFavorites, user, myBusine
                                                 className="bg-[#FF5200] hover:bg-[#E04800] text-white px-8"
                                             >
                                                 Explore Services
+                                            </Button>
+                                        </Card>
+                                    )}
+                                </TabsContent>
+
+                                {/* Notifications Tab */}
+                                <TabsContent value="notifications" className="mt-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                    <SectionHeading subtitle="View your submitted feedback and admin responses.">
+                                        Notifications
+                                    </SectionHeading>
+
+                                    {userFeedbacks.length > 0 ? (
+                                        <div className="space-y-4">
+                                            {userFeedbacks.map((feedback) => (
+                                                <Card key={feedback.id} className="border-0 shadow-lg shadow-gray-100/50 bg-white rounded-2xl overflow-hidden">
+                                                    <CardContent className="p-6">
+                                                        <div className="flex items-start gap-4">
+                                                            <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                                <MessageSquare className="w-5 h-5 text-[#FF5200]" />
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                                                                    <h3 className="font-semibold text-gray-900">{feedback.subject}</h3>
+                                                                    {getStatusBadge(feedback.status, !!feedback.admin_reply)}
+                                                                </div>
+                                                                <p className="text-sm text-gray-600 mb-3">{feedback.message}</p>
+                                                                <p className="text-xs text-gray-400 flex items-center gap-1">
+                                                                    <Clock className="w-3 h-3" />
+                                                                    Submitted {formatDistanceToNow(new Date(feedback.created_at), { addSuffix: true })}
+                                                                </p>
+
+                                                                {/* Admin Reply Section */}
+                                                                {feedback.admin_reply && (
+                                                                    <div className="mt-4 p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-100">
+                                                                        <div className="flex items-center gap-2 mb-2">
+                                                                            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                                                                <Reply className="w-3 h-3 text-white" />
+                                                                            </div>
+                                                                            <span className="text-sm font-semibold text-green-700">Admin Response</span>
+                                                                        </div>
+                                                                        <p className="text-sm text-green-900">{feedback.admin_reply}</p>
+                                                                        {feedback.admin_replied_at && (
+                                                                            <p className="text-xs text-green-600 mt-2">
+                                                                                Replied {formatDistanceToNow(new Date(feedback.admin_replied_at), { addSuffix: true })}
+                                                                            </p>
+                                                                        )}
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Pending Response Message */}
+                                                                {!feedback.admin_reply && feedback.status === 'pending' && (
+                                                                    <div className="mt-4 p-3 bg-yellow-50 rounded-xl border border-yellow-100">
+                                                                        <p className="text-sm text-yellow-700 flex items-center gap-2">
+                                                                            <Clock className="w-4 h-4" />
+                                                                            Awaiting response from admin
+                                                                        </p>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <Card className="border-0 shadow-sm py-16 text-center">
+                                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                <Bell className="h-8 w-8 text-gray-400" />
+                                            </div>
+                                            <h3 className="text-lg font-bold text-gray-900 mb-2">No notifications yet</h3>
+                                            <p className="text-gray-500 mb-6 max-w-sm mx-auto">
+                                                When you submit feedback through our contact form, you'll see responses here.
+                                            </p>
+                                            <Button
+                                                onClick={() => router.push('/contact')}
+                                                className="bg-[#FF5200] hover:bg-[#E04800] text-white px-8"
+                                            >
+                                                Contact Us
                                             </Button>
                                         </Card>
                                     )}
