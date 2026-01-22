@@ -130,9 +130,9 @@ export function BusinessFormWizard({ categories }: { categories: Category[] }) {
     const handlePaymentAndSubmit = async (data: CreateBusinessInput) => {
         try {
             // 1. Create Order
-            const { orderId, amount, error } = await createOrder(5000) // 5000 RS
+            const { orderId, amount, keyId, error } = await createOrder(5000) // 5000 RS
 
-            if (error || !orderId) {
+            if (error || !orderId || !keyId) {
                 toast.error('Failed to initiate payment')
                 setIsLoading(false)
                 return
@@ -143,7 +143,7 @@ export function BusinessFormWizard({ categories }: { categories: Category[] }) {
 
             // 2. Open Razorpay Modal
             const options = {
-                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                key: keyId,
                 amount: amount,
                 currency: "INR",
                 name: "NeedFul Business",
