@@ -20,6 +20,7 @@ export default async function HomePage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   let userData: { name: string | null; email: string; role: string; city: string | null } | null = null
+  let userCity: string | undefined = undefined
   if (user) {
     const { data } = await supabase
       .from('users')
@@ -27,6 +28,7 @@ export default async function HomePage() {
       .eq('id', user.id)
       .single()
     userData = data as typeof userData
+    userCity = (data as any)?.city ?? undefined
   }
 
   return (
@@ -38,7 +40,7 @@ export default async function HomePage() {
         <HeroSearch />
 
         {/* Business Stories Section */}
-        <StoriesScrollBar userCity={userData?.city ?? undefined} />
+        <StoriesScrollBar userCity={userCity} />
 
         {/* Promo Banners */}
         <PromoBanners />
